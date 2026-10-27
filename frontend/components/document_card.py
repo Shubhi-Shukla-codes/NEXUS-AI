@@ -1,0 +1,80 @@
+"""
+NEXUS Document Card Component
+Renders technical document summary cards with lifecycle badges, permissions,
+domain classification, and action triggers.
+"""
+
+import streamlit as st
+from typing import Dict, Any, Callable, Optional
+
+
+def render_document_card(
+    doc: Dict[str, Any],
+    on_view: Optional[Callable] = None,
+    on_approve: Optional[Callable] = None,
+    on_delete: Optional[Callable] = None,
+    can_manage: bool = False,
+) -> None:
+    """
+    Render a single document summary card.
+    Keys expected: id, filename, title, domain, status, file_size, chunk_count, created_at
+    """
+    doc_id = doc.get("id", "N/A")
+    filename = doc.get("filename", "Untitled")
+    title = doc.get("title") or filename
+    domain = doc.get("domain", "general").replace("_", " ").upper()
+    status = doc.get("status", "pending").lower()
+    size_kb = doc.get("file_size", 0) / 1024
+    chunk_count = doc.get("chunk_count", 0)
+    created_at = doc.get("created_at", "Unknown")
+
+    # Status badge styling
+    status_class = "status-offline"
+    if status == "approved" or status == "indexed":
+        status_class = "status-active"
+    elif status == "pending":
+        status_class = "status-pending"
+
+    st.markdown(
+        f"""
+        <div class="nexus-doc-item">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <div style="font-weight: 700; font-size: 1.02rem; color: #F4F2E9; margin-bottom: 3px;">
+                        📄 {title}
+                    </div>
+                    <div style="font-family: Consolas, monospace; font-size: 0.75rem; color: #BAC2B8;">
+                        FILE: {filename} &nbsp;|&nbsp; DOMAIN: <span style="color:#D6C6A5;">{domain}</span> &nbsp;|&nbsp; SIZE: {size_kb:.1f} KB &nbsp;|&nbsp; CHUNKS: {chunk_count}
+                    </div>
+                </div>
+                <div>
+                    <span class="nexus-badge {status_class}">{status.upper()}</span>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Action buttons row
+    col1, col2, col3, _ = st.columns([1.2, 1.2, 1.2, 4])
+    with col1:
+        if st.button("🔍 Preview", key=f"preview_{doc_id}"):
+            if on_view:
+                on_view(doc)
+            else:
+                st.info(f"Viewing document preview for ID: {doc_id}")
+    with col2:
+        if can_manage and status == "pending":
+            if st.button("✅ Approve", key=f"appr_{doc_id}"):
+                if on_approve:
+                    on_approve(doc_id)
+                else:
+                    st.success(f"Document {doc_id} marked for approval.")
+    with col3:
+        if can_manage:
+            if st.button("🗑️ Delete", key=f"del_{doc_id}"):
+                if on_delete:
+                    on_delete(doc_id)
+                else:
+                    st.warning(f"Document {doc_id} deletion requested.")

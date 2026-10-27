@@ -1,0 +1,296 @@
+/* ==============================================================================
+   NEXUS TACTICAL DESIGN SYSTEM
+   Visual Identity: Disciplined, Modern, Technical, Camouflage-Inspired
+   Color Tokens:
+     --olive-drab:        #556B2F
+     --army-green:        #4B5320
+     --deep-tactical:     #26382B
+     --forest-green:      #183B2B
+     --khaki:             #C3B091
+     --sand-beige:        #D6C6A5
+     --off-white:         #F4F2E9
+     --charcoal:          #202820
+     --charcoal-card:     #273227
+     --muted-gold:        #B49A5A
+     --border-tactical:   #3B4B3D
+     --danger-tactical:   #A84242
+     --warning-tactical:  #C48D3F
+     --success-tactical:  #4B7A47
+   ============================================================================== */
+
+:root {
+  --olive-drab: #556B2F;
+  --army-green: #4B5320;
+  --deep-tactical: #26382B;
+  --forest-green: #183B2B;
+  --khaki: #C3B091;
+  --sand-beige: #D6C6A5;
+  --off-white: #F4F2E9;
+  --charcoal: #202820;
+  --charcoal-card: #273227;
+  --muted-gold: #B49A5A;
+  --border-tactical: #3A4A3C;
+  --border-subtle: #2D3A2F;
+  --danger-tactical: #9E3838;
+  --warning-tactical: #B8860B;
+  --success-tactical: #45784A;
+  --font-mono: "Consolas", "Courier New", monospace;
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+/* Global Application Reset & Background */
+.stApp {
+  background-color: var(--charcoal) !important;
+  color: var(--off-white) !important;
+  font-family: var(--font-sans) !important;
+}
+
+/* Header & Top Bar Styling */
+.nexus-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--forest-green) 0%, var(--deep-tactical) 100%);
+  border-bottom: 2px solid var(--olive-drab);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.nexus-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 3px;
+  background-color: var(--army-green);
+  color: var(--sand-beige);
+  border: 1px solid var(--muted-gold);
+}
+
+.nexus-badge.status-active {
+  background-color: #233D29;
+  border-color: #4CAF50;
+  color: #A5D6A7;
+}
+
+.nexus-badge.status-pending {
+  background-color: #3D3520;
+  border-color: #D4AC0D;
+  color: #F9E79F;
+}
+
+.nexus-badge.status-offline {
+  background-color: #353835;
+  border-color: #8D99AE;
+  color: #D6D6D6;
+}
+
+/* Sidebar Custom Styling */
+section[data-testid="stSidebar"] {
+  background-color: #1A221C !important;
+  border-right: 1px solid var(--border-tactical) !important;
+}
+
+section[data-testid="stSidebar"] hr {
+  border-color: var(--border-subtle) !important;
+}
+
+/* Metric / KPI Cards */
+.nexus-stat-card {
+  background-color: var(--charcoal-card);
+  border: 1px solid var(--border-tactical);
+  border-left: 4px solid var(--olive-drab);
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.nexus-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--khaki);
+}
+
+.nexus-stat-label {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--sand-beige);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.nexus-stat-val {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--off-white);
+  font-family: var(--font-sans);
+}
+
+.nexus-stat-sub {
+  font-size: 0.75rem;
+  color: var(--khaki);
+  margin-top: 4px;
+}
+
+/* Tactical Camouflage Banner Pattern */
+.nexus-camo-hero {
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(85, 107, 47, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(38, 56, 43, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(75, 83, 32, 0.3) 0%, transparent 70%),
+    linear-gradient(180deg, #18241B 0%, #1F2B21 100%);
+  border: 1px solid var(--border-tactical);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Citation & Grounding Cards */
+.nexus-citation-card {
+  background-color: #1D2620;
+  border: 1px solid var(--border-tactical);
+  border-left: 3px solid var(--muted-gold);
+  border-radius: 5px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.nexus-citation-title {
+  color: var(--sand-beige);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nexus-citation-passage {
+  color: #DCD9CE;
+  font-family: var(--font-sans);
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin-top: 6px;
+  line-height: 1.45;
+  border-left: 2px solid var(--olive-drab);
+}
+
+/* Document Item Cards in Repository */
+.nexus-doc-item {
+  background-color: var(--charcoal-card);
+  border: 1px solid var(--border-tactical);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.nexus-doc-item:hover {
+  border-color: var(--olive-drab);
+}
+
+/* Streamlit Native Widget Overrides */
+div.stButton > button {
+  background-color: var(--deep-tactical) !important;
+  color: var(--off-white) !important;
+  border: 1px solid var(--olive-drab) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+div.stButton > button:hover {
+  background-color: var(--olive-drab) !important;
+  color: #FFFFFF !important;
+  border-color: var(--muted-gold) !important;
+  box-shadow: 0 2px 8px rgba(85, 107, 47, 0.4) !important;
+}
+
+div.stButton > button:active {
+  background-color: var(--forest-green) !important;
+}
+
+/* Primary Button Styling */
+div.stButton > button[kind="primary"] {
+  background-color: var(--army-green) !important;
+  border: 1px solid var(--muted-gold) !important;
+  color: var(--off-white) !important;
+}
+
+div.stButton > button[kind="primary"]:hover {
+  background-color: var(--olive-drab) !important;
+}
+
+/* Input Fields */
+div[data-baseweb="input"] {
+  background-color: #1A221C !important;
+  border-color: var(--border-tactical) !important;
+  color: var(--off-white) !important;
+}
+
+div[data-baseweb="input"] input {
+  color: var(--off-white) !important;
+}
+
+/* Empty State Containers */
+.nexus-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  border: 2px dashed var(--border-tactical);
+  border-radius: 8px;
+  background-color: rgba(32, 40, 32, 0.4);
+  margin: 20px 0;
+}
+
+.nexus-empty-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--sand-beige);
+  margin-top: 12px;
+}
+
+.nexus-empty-subtitle {
+  font-size: 0.88rem;
+  color: #9EA89F;
+  margin-top: 6px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Alert Boxes */
+.nexus-alert-info {
+  background-color: #1E2D24;
+  border-left: 4px solid var(--olive-drab);
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 10px 0;
+  color: #D6DEC8;
+}
+
+.nexus-alert-warning {
+  background-color: #332B1C;
+  border-left: 4px solid var(--warning-tactical);
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 10px 0;
+  color: #EBD9B5;
+}
+
+.nexus-alert-danger {
+  background-color: #331E1E;
+  border-left: 4px solid var(--danger-tactical);
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 10px 0;
+  color: #E6BDBD;
+}
