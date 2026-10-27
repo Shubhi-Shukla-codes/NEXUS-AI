@@ -39,12 +39,16 @@
   - [x] Permission-aware navigation and session logout invalidation.
   - [x] 28 comprehensive tests passed across unit and security test suites.
 
-- [ ] **PHASE 3: Document Repository**
-  - [ ] Upload handling with SHA-256 fingerprinting.
-  - [ ] Secure vault storage with path traversal protection.
-  - [ ] Document listing, search, filtering, and metadata inspection.
-  - [ ] Approval workflow (Pending -> Approved -> Rejected).
-  - [ ] Permission-scoped document actions and soft/hard deletion.
+- [x] **PHASE 3: Document Repository**
+  - [x] Upload validation: Size limit (50MB), extension whitelist, magic bytes, empty file rejection (`backend/storage/vault.py`).
+  - [x] SHA-256 content fingerprinting and collision/duplicate detection.
+  - [x] Path sanitization and directory traversal protection (`sanitize_filename`).
+  - [x] Isolated disk storage vault under `data/vault/<sha256>.<ext>`.
+  - [x] Document listing, domain scoping, and text query filtering (`backend/services/document_service.py`).
+  - [x] Approval lifecycle workflow (`pending` -> `approved` / `rejected`).
+  - [x] Safe document deletion (cascades database metadata and purges vault file).
+  - [x] Streamlit Ingestion & Repository views connected to backend service.
+  - [x] 43 comprehensive unit and security tests passed via pytest.
 
 - [ ] **PHASE 4: Ingestion Engine**
   - [ ] PyMuPDF (fitz) text and table extraction with page tracking.

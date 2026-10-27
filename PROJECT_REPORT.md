@@ -80,3 +80,14 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 28 unit and security tests passed in 11.65 seconds via `pytest`.
   - Isolated temporary SQLite test databases used for all assertions.
+
+### Milestone 3: Secure Document Storage Vault & Repository Lifecycle
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - File security vault (`backend/storage/vault.py`) enforcing magic-byte format validation (%PDF, PK ZIP, UTF-8 text), path traversal sanitization, and 50MB file size ceiling.
+  - SHA-256 content fingerprinting: Documents stored immutably as `<sha256>.<ext>`, eliminating filename collisions and automatically flagging exact duplicate uploads.
+  - Document service (`backend/services/document_service.py`) governing multi-parameter listing (domain, status, keyword search), approval state machine (`pending` -> `approved` / `rejected`), and permanent deletion with vault file unlinking.
+  - Streamlit UI integration: `ingest.py` connected to multi-file intake with real-time fingerprint feedback; `repository.py` connected to live search, expandable metadata preview, and permission-restricted approve/delete triggers.
+- **Validation**:
+  - 43 tests passed across foundation, frontend, database, auth, vault, and document service suites.
+  - Zero test regressions.

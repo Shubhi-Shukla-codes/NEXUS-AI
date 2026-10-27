@@ -6,6 +6,13 @@ metadata inspection, and permission-governed lifecycle management.
 
 import streamlit as st
 from backend.config import settings
+from backend.services.document_service import (
+    list_documents,
+    get_document_by_id,
+    approve_document,
+    delete_document,
+    DocumentError
+)
 from frontend.components.header import render_header
 from frontend.components.document_card import render_document_card
 
@@ -15,68 +22,93 @@ def render_repository_view() -> None:
     domain_filter = st.session_state.get("active_domain", "all")
     render_header("DOCUMENT REPOSITORY & VAULT", domain_label=domain_filter)
 
+    user = st.session_state.get("user") or {}
+    user_id = user.get("id")
+    username = user.get("username", "OPERATOR")
+    user_permissions = set(user.get("permissions") or [])
+
     # Search and Filter Toolbar
     c_search, c_domain, c_status = st.columns([2.5, 1.5, 1.2])
     with c_search:
-        search_query = st.text_input("🔍 Search Document Metadata or Filename", placeholder="e.g. maintenance manual, SDS...")
+        search_query = st.text_input("🔍 Search Document Metadata or Filename", placeholder="e.g. manual, guideline, SDS...")
     with c_domain:
+        domain_options = ["all"] + list(settings.domains)
+        selected_dom_idx = 0
+        if domain_filter in domain_options:
+            selected_dom_idx = domain_options.index(domain_filter)
+
         filter_domain = st.selectbox(
             "Category Filter",
-            options=["All Domains"] + list(settings.domains),
-            index=0
+            options=domain_options,
+            index=selected_dom_idx,
+            format_func=lambda x: "All Domains" if x == "all" else x.replace("_", " ").upper()
         )
     with c_status:
         filter_status = st.selectbox(
             "Lifecycle Status",
-            options=["All Statuses", "Approved", "Indexed", "Pending", "Failed"],
+            options=["all", "approved", "pending", "rejected", "indexed", "failed"],
+            format_func=lambda x: "All Statuses" if x == "all" else x.upper(),
             index=0
         )
 
     st.markdown("<hr style='margin: 8px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
-    # Fetch Documents from Database (or empty state)
-    docs = []
-    db_file = settings.paths.sqlite_db_path
-    if db_file.exists():
+    # Document details preview modal/box
+    if "preview_doc_id" in st.session_state and st.session_state["preview_doc_id"]:
+        preview_id = st.session_state["preview_doc_id"]
+        doc_details = get_document_by_id(preview_id, user_id=user_id)
+        if doc_details:
+            with st.expander(f"📄 Detailed Metadata: {doc_details['title']}", expanded=True):
+                col_p1, col_p2 = st.columns(2)
+                with col_p1:
+                    st.markdown(f"**Filename:** `{doc_details['filename']}`")
+                    st.markdown(f"**Domain:** `{doc_details['domain'].upper()}`")
+                    st.markdown(f"**Status:** `{doc_details['status'].upper()}`")
+                    st.markdown(f"**File Size:** `{doc_details['file_size']/1024:.1f} KB`")
+                with col_p2:
+                    st.markdown(f"**Uploaded By:** `{doc_details.get('creator_name') or 'N/A'}`")
+                    st.markdown(f"**Created At:** `{doc_details.get('created_at') or 'N/A'}`")
+                    st.markdown(f"**Approved By:** `{doc_details.get('approver_name') or 'N/A'}`")
+                    st.markdown(f"**SHA-256:** `{doc_details.get('file_hash')}`")
+
+                if st.button("Close Preview"):
+                    st.session_state["preview_doc_id"] = None
+                    st.rerun()
+
+    # Fetch Documents from Backend Service
+    try:
+        filtered_docs = list_documents(
+            domain=filter_domain,
+            status=filter_status,
+            search_query=search_query,
+            user_id=user_id
+        )
+    except Exception as e:
+        st.error(f"⚠️ Error querying repository: {e}")
+        filtered_docs = []
+
+    # Action Handlers
+    def handle_view(doc_dict):
+        st.session_state["preview_doc_id"] = doc_dict["id"]
+        st.rerun()
+
+    def handle_approve(doc_id):
         try:
-            import sqlite3
-            conn = sqlite3.connect(db_file)
-            cur = conn.cursor()
-            cur.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='documents'")
-            if cur.fetchone()[0] > 0:
-                cur.execute(
-                    "SELECT id, filename, title, domain, status, file_size, chunk_count, created_at FROM documents ORDER BY id DESC"
-                )
-                rows = cur.fetchall()
-                for r in rows:
-                    docs.append({
-                        "id": r[0],
-                        "filename": r[1],
-                        "title": r[2],
-                        "domain": r[3],
-                        "status": r[4],
-                        "file_size": r[5],
-                        "chunk_count": r[6],
-                        "created_at": r[7]
-                    })
-            conn.close()
-        except Exception:
-            pass
+            approve_document(doc_id, user_id=user_id, username=username)
+            st.success(f"Document ID #{doc_id} cleared and approved for retrieval!")
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Approval error: {exc}")
 
-    # Apply Filters
-    filtered_docs = docs
-    if search_query:
-        sq = search_query.lower()
-        filtered_docs = [
-            d for d in filtered_docs
-            if sq in d["filename"].lower() or sq in d["title"].lower()
-        ]
-    if filter_domain != "All Domains":
-        filtered_docs = [d for d in filtered_docs if d["domain"] == filter_domain]
-    if filter_status != "All Statuses":
-        filtered_docs = [d for d in filtered_docs if d["status"].lower() == filter_status.lower()]
+    def handle_delete(doc_id):
+        try:
+            delete_document(doc_id, user_id=user_id, username=username)
+            st.warning(f"Document ID #{doc_id} permanently removed from vault.")
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Deletion error: {exc}")
 
-    # Render Documents or Empty State
+    # Render Documents or Clean Empty State
     if not filtered_docs:
         st.markdown(
             """
@@ -91,15 +123,21 @@ def render_repository_view() -> None:
             """,
             unsafe_allow_html=True
         )
-        col_btn, _ = st.columns([1.5, 4])
-        with col_btn:
-            if st.button("📥 Go to Document Ingestion", use_container_width=True):
-                st.session_state["current_view"] = "ingest"
-                st.rerun()
+        if "doc:upload" in user_permissions:
+            col_btn, _ = st.columns([1.5, 4])
+            with col_btn:
+                if st.button("📥 Go to Document Ingestion", use_container_width=True):
+                    st.session_state["current_view"] = "ingest"
+                    st.rerun()
     else:
-        st.caption(f"Displaying {len(filtered_docs)} document{'s' if len(filtered_docs) != 1 else ''}")
-        user_role = st.session_state.get("user", {}).get("role", "guest")
-        can_manage = user_role in ("administrator", "instructor")
+        st.caption(f"Displaying {len(filtered_docs)} document{'s' if len(filtered_docs) != 1 else ''} in vault")
+        can_manage = ("doc:approve" in user_permissions) or ("doc:delete" in user_permissions)
 
         for doc in filtered_docs:
-            render_document_card(doc, can_manage=can_manage)
+            render_document_card(
+                doc,
+                on_view=handle_view,
+                on_approve=handle_approve,
+                on_delete=handle_delete,
+                can_manage=can_manage
+            )
