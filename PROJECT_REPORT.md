@@ -142,3 +142,14 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 72 automated tests passed in 50.96s across unit, security, and integration suites.
   - Validated conversation thread lifecycle, mock LLM generation, grounded prompt assembly, citation mapping, threshold abstention, and empty query safety.
+
+### Milestone 8: Advanced Hybrid Search & Domain Taxonomy Modules
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - In-memory BM25 sparse keyword index (`backend/retrieval/bm25.py`): BM25Okapi implementation with custom technical tokenization that preserves alphanumeric part numbers, codes, and hyphens (e.g. `B-12`, `MIL-STD-810G`, `IP67`). Dynamically synchronized with SQLite `document_chunks`.
+  - Domain taxonomy engine (`backend/retrieval/domain_manager.py`): Complete profiles, metadata schemas, and keyword dictionaries for the 6 core institutional pillars (`technical_maintenance`, `training_education`, `safety_emergency`, `defensive_cybersecurity`, `humanitarian_geospatial`, `hazard_environmental`). Includes heuristic domain inference from natural language queries.
+  - Reciprocal Rank Fusion (`backend/retrieval/hybrid_retriever.py`): Combines dense vector candidates and sparse BM25 candidates with standard constant $k=60$ ($RRF\_score = \frac{0.6}{60 + r_{dense}} + \frac{0.4}{60 + r_{sparse}}$), elevating documents that match both semantic concepts and exact technical codes.
+  - Tactical Chat UI integration (`frontend/views/chat.py`): Search Mode selector allowing operators to toggle between "Hybrid (Dense + BM25 RRF)" and "Dense Semantic (ChromaDB)", with real-time domain profile telemetry display.
+- **Validation**:
+  - 78 automated tests passed in 59.29s across all unit, security, and integration suites.
+  - Validated technical tokenization, BM25 exact code retrieval, domain taxonomy matching, RRF candidate rank fusion, hybrid retrieval pipeline, and hybrid RAG generation.

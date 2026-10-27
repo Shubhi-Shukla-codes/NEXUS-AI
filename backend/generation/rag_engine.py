@@ -131,13 +131,14 @@ class RAGEngine:
         username: str,
         domain: Optional[str] = None,
         conversation_id: Optional[str] = None,
+        search_mode: str = "hybrid",
         top_k: Optional[int] = None,
         threshold: Optional[float] = None,
         custom_path: Optional[Path] = None
     ) -> Dict[str, Any]:
         """
         Execute full Grounded RAG flow:
-        1. Query semantic retrieval.
+        1. Query retrieval (Dense Semantic or Hybrid Dense+BM25).
         2. Verify evidence sufficiency / threshold.
         3. If insufficient, abstain immediately without wasting compute.
         4. If sufficient, construct grounded prompt and invoke local LLM.
@@ -156,16 +157,41 @@ class RAGEngine:
         k = top_k or self.default_top_k
         thresh = threshold if threshold is not None else self.similarity_threshold
 
-        # Step 1: Semantic Retrieval
-        retrieval_res = self.retriever.retrieve_evidence(
-            query=cleaned_query,
-            user_id=user_id,
-            username=username,
-            domain=domain,
-            top_k=k,
-            threshold=thresh,
-            custom_path=custom_path
-        )
+        # Step 1: Retrieval (Hybrid vs Dense)
+        if search_mode == "hybrid":
+            try:
+                from backend.retrieval.hybrid_retriever import HybridRetriever
+                hybrid = HybridRetriever(semantic_retriever=self.retriever)
+                retrieval_res = hybrid.retrieve_hybrid_evidence(
+                    query=cleaned_query,
+                    user_id=user_id,
+                    username=username,
+                    domain=domain,
+                    top_k=k,
+                    threshold=thresh,
+                    custom_path=custom_path
+                )
+            except Exception as exc:
+                logger.warning("Hybrid retrieval encountered fallback, falling back to dense: %s", exc)
+                retrieval_res = self.retriever.retrieve_evidence(
+                    query=cleaned_query,
+                    user_id=user_id,
+                    username=username,
+                    domain=domain,
+                    top_k=k,
+                    threshold=thresh,
+                    custom_path=custom_path
+                )
+        else:
+            retrieval_res = self.retriever.retrieve_evidence(
+                query=cleaned_query,
+                user_id=user_id,
+                username=username,
+                domain=domain,
+                top_k=k,
+                threshold=thresh,
+                custom_path=custom_path
+            )
 
         citations = retrieval_res.get("citations", [])
         is_sufficient = retrieval_res.get("is_sufficient", False)

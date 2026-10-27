@@ -87,10 +87,13 @@
   - [x] Interactive conversational Grounded RAG Chat view with thread management (`frontend/views/chat.py`).
   - [x] 72 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 8: Advanced Search and Domain Modules**
-  - [ ] Hybrid search (dense semantic + keyword BM25).
-  - [ ] Domain-specific metadata schemas and specialized filters.
-  - [ ] Domain knowledge management across 6 core pillars.
+- [x] **PHASE 8: Advanced Search and Domain Modules**
+  - [x] High-performance BM25Okapi sparse keyword retrieval engine with technical tokenization (`backend/retrieval/bm25.py`).
+  - [x] Compound technical code preservation (e.g. `B-12`, `MIL-STD-810G`, `IP67`).
+  - [x] Domain profiles, specialized metadata schemas, and heuristic taxonomy matching across 6 institutional knowledge pillars (`backend/retrieval/domain_manager.py`).
+  - [x] Reciprocal Rank Fusion (RRF) hybrid search engine (`backend/retrieval/hybrid_retriever.py`).
+  - [x] Grounded RAG integration with selectable search modes (Hybrid RRF vs Dense Semantic) in Chat view (`frontend/views/chat.py`).
+  - [x] 78 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 9: Dataset and Evaluation Framework**
   - [ ] Curated demonstration dataset (public + synthetic).
@@ -111,4 +114,4 @@
 ---
 
 ## Current Status Summary
-Phase 7 (Local LLM and Grounded RAG) is complete and verified with 72 passing unit/integration tests. Next step: Phase 8 (Advanced Search and Domain Modules).
+Phase 8 (Advanced Search and Domain Modules) is complete and verified with 78 passing unit/integration tests. Next step: Phase 9 (Dataset and Evaluation Framework).

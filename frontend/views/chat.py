@@ -80,10 +80,27 @@ def render_chat_view() -> None:
             st.session_state["active_conv_id"] = None
             st.rerun()
 
-    st.caption(
-        f"Active Domain: `{domain_filter.upper()}` | Model: `Qwen2.5 1.5B (Ollama Local)` | "
-        "Engine: `Grounded RAG (Cosine Sim >= 0.35)`"
-    )
+    st.markdown("<hr style='margin: 4px 0 10px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
+
+    # Search Mode and Domain Telemetry
+    col_mode, col_domain_info = st.columns([1.5, 2.5])
+    with col_mode:
+        search_mode_sel = st.selectbox(
+            "Search Engine Mode",
+            ["Hybrid (Dense + BM25 RRF)", "Dense Semantic (ChromaDB)"],
+            index=0,
+            label_visibility="collapsed"
+        )
+        mode_val = "hybrid" if "Hybrid" in search_mode_sel else "dense"
+
+    with col_domain_info:
+        from backend.retrieval.domain_manager import get_domain_profile
+        prof = get_domain_profile(domain_filter)
+        if prof:
+            st.caption(f"🛡️ **{prof.display_name}**: *{prof.description}*")
+        else:
+            st.caption(f"🌐 Scope: `ALL DOMAINS` | Model: `Qwen2.5 1.5B (Ollama Local)` | Engine: `{mode_val.upper()}`")
+
     st.markdown("<hr style='margin: 4px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
     # Fetch ordered messages from SQLite database
@@ -133,6 +150,7 @@ def render_chat_view() -> None:
                 user_id=user_id,
                 username=username,
                 domain=domain_filter if domain_filter != "all" else None,
-                conversation_id=active_conv_id
+                conversation_id=active_conv_id,
+                search_mode=mode_val
             )
         st.rerun()
