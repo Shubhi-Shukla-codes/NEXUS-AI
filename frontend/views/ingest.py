@@ -104,14 +104,18 @@ def render_ingest_view() -> None:
                         )
                     else:
                         success_count += 1
-                        status_badge = "status-active" if result['status'] == "approved" else "status-pending"
+                        # Execute extraction and chunking pipeline
+                        from backend.ingestion.pipeline import process_document
+                        pipeline_res = process_document(result["id"])
+
+                        status_badge = "status-active" if pipeline_res['status'] == "approved" else "status-pending"
                         st.markdown(
                             f"""
                             <div style="background:#1B241D; border-left:4px solid #556B2F; padding:8px 12px; margin-bottom:6px; border-radius:3px;">
                                 ✅ <b>{file.name}</b> ({result['file_size']/1024:.1f} KB) &nbsp;—&nbsp;
-                                <span class="nexus-badge {status_badge}">{result['status'].upper()}</span>
+                                <span class="nexus-badge {status_badge}">{pipeline_res['status'].upper()}</span>
                                 <span style="font-family:Consolas,monospace; font-size:0.75rem; color:#A4B0A3; margin-left:8px;">
-                                    SHA: {result['file_hash'][:16]}...
+                                    PAGES: {pipeline_res['pages_count']} | CHUNKS: {pipeline_res['chunks_count']}
                                 </span>
                             </div>
                             """,

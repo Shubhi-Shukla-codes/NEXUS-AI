@@ -91,3 +91,16 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 43 tests passed across foundation, frontend, database, auth, vault, and document service suites.
   - Zero test regressions.
+
+### Milestone 4: Multi-Format Document Ingestion & Structure-Aware Chunking
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - C-based PyMuPDF (fitz) parser extracting page text and converting tabular layout grids into standard Markdown tables.
+  - Parsers for Microsoft Word (.docx), Excel (.xlsx), CSV, JSON, Markdown, and TXT files.
+  - Text cleaning engine (`backend/ingestion/cleaner.py`) fixing broken line-break hyphenations (`tele-\ncommunication` -> `telecommunication`), normalizing irregular whitespaces, and stripping recurring boilerplate running headers/footers across pages.
+  - Structure-aware chunker (`backend/ingestion/chunker.py`) enforcing strict page-boundary preservation (chunks never cross page borders untracked), heading context propagation, and deterministic UUIDv5 generation (`uuid5(NAMESPACE_DNS, doc_page_chunk)`).
+  - Master pipeline (`backend/ingestion/pipeline.py`) populating SQLite `document_pages` and `document_chunks` relational records and updating document chunk counts.
+  - Streamlit ingestion UI updated to automatically trigger pipeline upon upload with instant page and chunk telemetry display.
+- **Validation**:
+  - 55 automated tests passed in 30.79s across unit, integration, and security suites.
+  - Validated synthetic PDF, DOCX, XLSX, CSV, JSON extraction.

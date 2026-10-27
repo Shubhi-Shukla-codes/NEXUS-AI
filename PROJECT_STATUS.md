@@ -50,11 +50,15 @@
   - [x] Streamlit Ingestion & Repository views connected to backend service.
   - [x] 43 comprehensive unit and security tests passed via pytest.
 
-- [ ] **PHASE 4: Ingestion Engine**
-  - [ ] PyMuPDF (fitz) text and table extraction with page tracking.
-  - [ ] DOCX, TXT, MD, CSV, JSON, XLSX parsers.
-  - [ ] Text cleaning and structural normalization.
-  - [ ] Structure-aware chunking with stable IDs and boundary metadata.
+- [x] **PHASE 4: Ingestion Engine**
+  - [x] High-performance PyMuPDF (fitz) parser with page and markdown table extraction (`backend/ingestion/extractors/pdf_extractor.py`).
+  - [x] Office DOCX parser with heading and table extraction (`backend/ingestion/extractors/docx_extractor.py`).
+  - [x] Tabular XLSX (openpyxl) and CSV parsers (`backend/ingestion/extractors/tabular_extractor.py`, `text_extractor.py`).
+  - [x] Plaintext, Markdown, and semantic JSON extractors (`backend/ingestion/extractors/text_extractor.py`).
+  - [x] Structural text cleaning: Whitespace normalization, broken hyphenation repair, control char purging, and boilerplate header/footer removal (`backend/ingestion/cleaner.py`).
+  - [x] Structure-aware sliding window chunker with exact page boundary preservation and deterministic UUIDv5s (`backend/ingestion/chunker.py`).
+  - [x] Master ingestion pipeline synchronizing SQLite `document_pages` and `document_chunks` (`backend/ingestion/pipeline.py`).
+  - [x] 55 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 5: Embeddings and Vector Storage**
   - [ ] SentenceTransformers model wrapper (`all-MiniLM-L6-v2`).
