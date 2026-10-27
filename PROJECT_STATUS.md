@@ -69,11 +69,14 @@
   - [x] Controlled full re-indexing engine (`backend/retrieval/reindex.py`).
   - [x] 60 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 6: Semantic Retrieval**
-  - [ ] Query vectorization and cosine similarity retrieval.
-  - [ ] Metadata-filtered Top-K candidate extraction.
-  - [ ] Strict permission-aware retrieval boundary enforcement.
-  - [ ] Evidence deduplication and context budget assembly.
+- [x] **PHASE 6: Semantic Retrieval**
+  - [x] Query vectorization and cosine similarity retrieval (`backend/retrieval/retriever.py`).
+  - [x] Metadata-filtered Top-K candidate extraction (domain-scoped, approved-only).
+  - [x] Strict permission-aware retrieval boundary enforcement (`doc:view` checked before query).
+  - [x] Evidence deduplication and context token budget assembly (token budgeting, structured prompt headers).
+  - [x] Grounded similarity thresholding with automated abstention on low-confidence queries.
+  - [x] Streamlit Chat view updated with interactive semantic evidence query and live citation inspection (`frontend/views/chat.py`).
+  - [x] 66 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 7: Local LLM and RAG**
   - [ ] Ollama API client integration for `qwen2.5:1.5b`.
@@ -106,4 +109,4 @@
 ---
 
 ## Current Status Summary
-Phase 0 foundation is complete and verified. Next step: Phase 1 UI and Application Foundation.
+Phase 6 (Semantic Retrieval) is complete and verified with 66 passing unit/integration tests. Next step: Phase 7 (Local LLM and Grounded RAG).

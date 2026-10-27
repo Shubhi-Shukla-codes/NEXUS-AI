@@ -247,6 +247,14 @@ def approve_document(
         if cur.rowcount == 0:
             raise DocumentError(f"Document ID #{document_id} not found.")
 
+    # Automatically index approved document chunks into ChromaDB
+    try:
+        from backend.storage.vector_store import index_document_in_vector_store
+        index_document_in_vector_store(document_id, custom_path=custom_path)
+    except Exception as exc:
+        # Keep approval in SQLite but log indexing note
+        pass
+
     log_audit_event(
         event_type=EVENT_DOC_APPROVE,
         actor_username=username,
@@ -318,6 +326,15 @@ def delete_document(
     # Remove physical file from vault
     if vault_path:
         remove_from_vault(vault_path)
+
+    # Purge vectors from ChromaDB
+    try:
+        from backend.storage.vector_store import ChromaVectorStore
+        store = ChromaVectorStore()
+        store.delete_document_vectors(document_id)
+        store.close()
+    except Exception:
+        pass
 
     log_audit_event(
         event_type=EVENT_DOC_DELETE,

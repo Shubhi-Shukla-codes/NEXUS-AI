@@ -117,3 +117,16 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 60 automated tests passed in 39.30s via `pytest`.
   - Verified embedding normalization, Chroma upsert, metadata filtering, vector unlinking on document deletion, and controlled full re-indexing.
+
+### Milestone 6: Semantic Retrieval Engine & Evidence Grounding
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - Semantic retrieval engine (`backend/retrieval/retriever.py`): Vectorizes incoming user queries using the local embedding model, issues cosine distance queries against ChromaDB, and converts distance to cosine similarity (`1.0 - distance`).
+  - Permission-aware query gating: Enforces backend RBAC check (`doc:view`) before any vector search is executed, eliminating UI bypass risks.
+  - Confidence thresholding & strict abstention: Configurable similarity threshold (default `0.35`). Queries matching candidates below the threshold return `is_sufficient=False` with a polite abstention signal, mitigating RAG hallucinations when knowledge is missing.
+  - Context token budgeting & prompt assembly: Truncates retrieved chunks to a strict token ceiling (default 1500 tokens / 6000 chars) to prevent context window overflow on small models, and formats rich evidence headers (`[Document: <filename>, Page: <page>, Score: <similarity>]`).
+  - Automatic vector synchronization: Updated `backend/services/document_service.py` to auto-index approved documents and auto-delete vectors when documents are removed.
+  - Tactical Chat UI integration (`frontend/views/chat.py`): Operators can query the local knowledge repository with live similarity scores, expandable evidence references, and instant warning badges on abstention.
+- **Validation**:
+  - 66 automated tests passed in 48.74s across unit, security, and integration suites.
+  - Tested query retrieval, abstention below threshold, Top-K limits, domain scoping, empty query handling, and unauthorized permission blocking.

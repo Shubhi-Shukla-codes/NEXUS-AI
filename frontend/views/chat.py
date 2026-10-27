@@ -8,6 +8,7 @@ import streamlit as st
 from datetime import datetime
 from frontend.components.header import render_header
 from frontend.components.citation_card import render_citations_list
+from backend.retrieval.retriever import SemanticRetriever
 
 
 def render_chat_view() -> None:
@@ -15,13 +16,22 @@ def render_chat_view() -> None:
     domain_filter = st.session_state.get("active_domain", "all")
     render_header("KNOWLEDGE WORKSPACE", domain_label=domain_filter)
 
+    user = st.session_state.get("user") or {}
+    user_id = user.get("id")
+    username = user.get("username", "OPERATOR")
+    user_permissions = set(user.get("permissions") or [])
+
+    if "doc:view" not in user_permissions:
+        st.error("⛔ Access Denied: Your clearance role lacks the 'doc:view' permission.")
+        return
+
     # Initialize conversation state if not present
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
             {
                 "role": "assistant",
                 "content": (
-                    "**NEXUS Intelligence Terminal initialized.** All queries are evaluated against "
+                    "**NEXUS Intelligence Terminal active.** All inquiries are evaluated against "
                     "locally indexed, authorized technical documentation. Answers provide exact source citations "
                     "and page references. If sufficient evidence is absent, the system will explicitly abstain."
                 ),
@@ -33,7 +43,7 @@ def render_chat_view() -> None:
     # Workspace Control Toolbar
     col_scope, col_actions = st.columns([2.5, 1])
     with col_scope:
-        st.caption(f"Active Domain Scoping: `{domain_filter.upper()}` | Retrieval Mode: `DENSE SEMANTIC (Top-K=4)`")
+        st.caption(f"Domain Scoping: `{domain_filter.upper()}` | Retrieval: `DENSE SEMANTIC (Top-K=4, Threshold=0.35)`")
     with col_actions:
         if st.button("🔄 New Conversation", use_container_width=True):
             st.session_state["messages"] = [
@@ -70,7 +80,6 @@ def render_chat_view() -> None:
     user_query = st.chat_input("Enter natural language query or technical inquiry...")
     if user_query:
         now_ts = datetime.now().strftime("%H:%M:%S")
-        # Add user query to conversation
         st.session_state["messages"].append({
             "role": "user",
             "content": user_query,
@@ -78,27 +87,48 @@ def render_chat_view() -> None:
             "citations": []
         })
 
-        # Process Query Placeholder (Integrated with Backend in Phase 7)
         with st.chat_message("assistant", avatar="🛡️"):
-            with st.spinner("Searching local vector repository & assembling evidence..."):
-                # Check if documents exist in vault
-                db_path = st.session_state.get("db_path")
-                # For Phase 1, provide a clean grounded placeholder explaining pipeline state
-                response_content = (
-                    f"**Query Evaluated**: `{user_query}`\n\n"
-                    "> [!NOTE]\n"
-                    "> **Pipeline State (Phase 1 Shell)**: UI and component foundation active. "
-                    "The local Ingestion Engine (PyMuPDF + Chunking) and RAG integration (ChromaDB + Ollama Qwen2.5 1.5B) "
-                    "will execute query vectorization once documents are uploaded and indexed."
+            with st.spinner("Executing semantic retrieval across local knowledge vault..."):
+                retriever = SemanticRetriever()
+                retrieval_res = retriever.retrieve_evidence(
+                    query=user_query,
+                    user_id=user_id,
+                    username=username,
+                    domain=domain_filter if domain_filter != "all" else None
                 )
-                sample_citations = []
-                st.markdown(response_content)
 
-        # Append assistant response
+                if retrieval_res["is_sufficient"]:
+                    citations = retrieval_res["citations"]
+                    top_cite = citations[0]
+                    response_content = (
+                        f"**Evidence Retrieved ({len(citations)} source passages):**\n\n"
+                        f"> Primary Ground Truth Reference: **{top_cite['filename']}** (Page {top_cite['page_number']}, Relevance: {top_cite['relevance_score']*100:.1f}%)\n\n"
+                        f"**Relevant Passages:**\n\n"
+                    )
+                    for idx, c in enumerate(citations[:2], 1):
+                        response_content += f"*{idx}.* \"{c['passage'][:300]}...\"\n\n"
+                    response_content += (
+                        "> [!NOTE]\n"
+                        "> In Phase 7, the local Qwen2.5 1.5B model synthesizes these exact retrieved passages "
+                        "into a coherent grounded summary."
+                    )
+                else:
+                    citations = []
+                    response_content = (
+                        "> [!WARNING]\n"
+                        "> **INSUFFICIENT EVIDENCE DETECTED (Abstention Policy Active)**\n"
+                        "> No authorized technical documents in the local vault satisfied the required relevance threshold "
+                        f"({retrieval_res['similarity_threshold']*100:.0f}%) for this query in scope `{domain_filter.upper()}`.\n\n"
+                        "To prevent hallucinations, NEXUS abstains from answering until relevant documentation is uploaded and approved."
+                    )
+                st.markdown(response_content)
+                if citations:
+                    render_citations_list(citations)
+
         st.session_state["messages"].append({
             "role": "assistant",
             "content": response_content,
             "timestamp": datetime.now().strftime("%H:%M:%S"),
-            "citations": sample_citations
+            "citations": citations
         })
         st.rerun()
