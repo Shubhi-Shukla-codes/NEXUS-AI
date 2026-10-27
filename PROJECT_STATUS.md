@@ -60,11 +60,14 @@
   - [x] Master ingestion pipeline synchronizing SQLite `document_pages` and `document_chunks` (`backend/ingestion/pipeline.py`).
   - [x] 55 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 5: Embeddings and Vector Storage**
-  - [ ] SentenceTransformers model wrapper (`all-MiniLM-L6-v2`).
-  - [ ] Batched chunk embedding generation with normalization.
-  - [ ] ChromaDB persistent client and collection management.
-  - [ ] Re-indexing and sync between SQLite and ChromaDB.
+- [x] **PHASE 5: Embeddings and Vector Storage**
+  - [x] Replaceable local embedding provider interface (`BaseEmbeddingProvider`) with lazy loading (`backend/retrieval/embeddings.py`).
+  - [x] Memory-efficient batch vector generation (16 chunks/batch) with L2 normalization (`SentenceTransformersProvider` / `MockEmbeddingProvider`).
+  - [x] ChromaDB persistent client manager (`ChromaVectorStore`) using cosine distance metric (`backend/storage/vector_store.py`).
+  - [x] Vector indexing synchronized with SQLite document metadata and chunk IDs.
+  - [x] Domain and approval status metadata filtering.
+  - [x] Controlled full re-indexing engine (`backend/retrieval/reindex.py`).
+  - [x] 60 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 6: Semantic Retrieval**
   - [ ] Query vectorization and cosine similarity retrieval.

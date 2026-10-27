@@ -78,6 +78,15 @@ def render_dashboard_view() -> None:
         except Exception:
             pass
 
+    # Query ChromaDB vector count if initialized
+    total_vectors = 0
+    try:
+        from backend.storage.vector_store import ChromaVectorStore
+        store = ChromaVectorStore()
+        total_vectors = store.count_vectors()
+    except Exception:
+        pass
+
     # Real Disk Storage Calculation
     try:
         total_b, used_b, free_b = shutil.disk_usage(str(settings.paths.data_dir))

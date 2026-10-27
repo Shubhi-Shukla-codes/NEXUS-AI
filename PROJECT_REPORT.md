@@ -104,3 +104,16 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 55 automated tests passed in 30.79s across unit, integration, and security suites.
   - Validated synthetic PDF, DOCX, XLSX, CSV, JSON extraction.
+
+### Milestone 5: Local Embeddings & ChromaDB Vector Storage
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - Local embedding subsystem (`backend/retrieval/embeddings.py`) with abstract provider interface, lazy loading to avoid startup memory spikes on 8-16 GB laptop hardware, and L2 unit vector normalization.
+  - Default model: `all-MiniLM-L6-v2` (384 dimensions) with 16-chunk batch processing on CPU; deterministic mock provider for testing and air-gapped CI.
+  - ChromaDB integration (`backend/storage/vector_store.py`) operating in-process with SQLite/DuckDB persistence under `data/vector_store/`.
+  - HNSW cosine distance indexing (`hnsw:space: cosine`) with metadata filtering by domain category and approval lifecycle state (`approved` / `indexed`).
+  - Controlled full re-indexing engine (`backend/retrieval/reindex.py`) enabling administrators to safely re-sync all relational SQLite passages into ChromaDB if models change.
+  - Dashboard telemetry updated to query real ChromaDB collection vector counts.
+- **Validation**:
+  - 60 automated tests passed in 39.30s via `pytest`.
+  - Verified embedding normalization, Chroma upsert, metadata filtering, vector unlinking on document deletion, and controlled full re-indexing.
