@@ -1,18 +1,25 @@
 """
-NEXUS Knowledge Workspace View (Chat Interface)
+NEXUS Knowledge Workspace View (Grounded RAG Chat Interface)
 Provides evidence-grounded natural language Q&A, source citation inspection,
-insufficient evidence abstention, and multi-turn conversation memory.
+insufficient evidence abstention, and multi-turn SQLite conversation memory.
 """
 
 import streamlit as st
 from datetime import datetime
 from frontend.components.header import render_header
 from frontend.components.citation_card import render_citations_list
-from backend.retrieval.retriever import SemanticRetriever
+from backend.generation.rag_engine import get_default_rag_engine, ABSTENTION_MESSAGE
+from backend.services.conversation_service import (
+    create_conversation,
+    list_conversations,
+    get_conversation,
+    get_conversation_messages,
+    delete_conversation
+)
 
 
 def render_chat_view() -> None:
-    """Render the interactive conversational RAG workspace."""
+    """Render the interactive conversational Grounded RAG workspace."""
     domain_filter = st.session_state.get("active_domain", "all")
     render_header("KNOWLEDGE WORKSPACE", domain_label=domain_filter)
 
@@ -25,110 +32,107 @@ def render_chat_view() -> None:
         st.error("⛔ Access Denied: Your clearance role lacks the 'doc:view' permission.")
         return
 
-    # Initialize conversation state if not present
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = [
-            {
-                "role": "assistant",
-                "content": (
-                    "**NEXUS Intelligence Terminal active.** All inquiries are evaluated against "
-                    "locally indexed, authorized technical documentation. Answers provide exact source citations "
-                    "and page references. If sufficient evidence is absent, the system will explicitly abstain."
-                ),
-                "timestamp": datetime.now().strftime("%H:%M:%S"),
-                "citations": []
-            }
-        ]
+    # Ensure user has an active conversation thread
+    convs = list_conversations(user_id=user_id)
+    active_conv_id = st.session_state.get("active_conv_id")
+
+    if not active_conv_id or not any(c["id"] == active_conv_id for c in convs):
+        if convs:
+            active_conv_id = convs[0]["id"]
+        else:
+            new_conv = create_conversation(
+                user_id=user_id,
+                title="New Tactical Briefing",
+                domain_scope=domain_filter
+            )
+            active_conv_id = new_conv["id"]
+            convs = [new_conv]
+        st.session_state["active_conv_id"] = active_conv_id
 
     # Workspace Control Toolbar
-    col_scope, col_actions = st.columns([2.5, 1])
-    with col_scope:
-        st.caption(f"Domain Scoping: `{domain_filter.upper()}` | Retrieval: `DENSE SEMANTIC (Top-K=4, Threshold=0.35)`")
-    with col_actions:
-        if st.button("🔄 New Conversation", use_container_width=True):
-            st.session_state["messages"] = [
-                {
-                    "role": "assistant",
-                    "content": "Conversation context cleared. Ready for new query.",
-                    "timestamp": datetime.now().strftime("%H:%M:%S"),
-                    "citations": []
-                }
-            ]
+    col_select, col_new, col_del = st.columns([3.2, 1.2, 0.8])
+    with col_select:
+        conv_options = {c["id"]: f"{c['title']} ({c.get('message_count', 0)} msgs)" for c in convs}
+        selected_id = st.selectbox(
+            "Active Briefing Thread",
+            options=list(conv_options.keys()),
+            format_func=lambda x: conv_options.get(x, x),
+            index=list(conv_options.keys()).index(active_conv_id) if active_conv_id in conv_options else 0,
+            label_visibility="collapsed"
+        )
+        if selected_id != active_conv_id:
+            st.session_state["active_conv_id"] = selected_id
             st.rerun()
 
-    st.markdown("<hr style='margin: 8px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
+    with col_new:
+        if st.button("➕ New Thread", use_container_width=True):
+            created = create_conversation(
+                user_id=user_id,
+                title="New Tactical Briefing",
+                domain_scope=domain_filter
+            )
+            st.session_state["active_conv_id"] = created["id"]
+            st.rerun()
 
-    # Message History Stream
-    for msg in st.session_state["messages"]:
-        role = msg["role"]
-        content = msg["content"]
-        ts = msg.get("timestamp", "")
-        citations = msg.get("citations", [])
+    with col_del:
+        if st.button("🗑️ Delete", use_container_width=True):
+            delete_conversation(active_conv_id, user_id=user_id)
+            st.session_state["active_conv_id"] = None
+            st.rerun()
 
-        if role == "user":
-            with st.chat_message("user", avatar="🧑‍💻"):
-                st.markdown(f"**Query** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
-                st.markdown(content)
-        else:
-            with st.chat_message("assistant", avatar="🛡️"):
-                st.markdown(f"**NEXUS Terminal** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
-                st.markdown(content)
-                if citations:
-                    render_citations_list(citations)
+    st.caption(
+        f"Active Domain: `{domain_filter.upper()}` | Model: `Qwen2.5 1.5B (Ollama Local)` | "
+        "Engine: `Grounded RAG (Cosine Sim >= 0.35)`"
+    )
+    st.markdown("<hr style='margin: 4px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
+
+    # Fetch ordered messages from SQLite database
+    messages = get_conversation_messages(active_conv_id, user_id=user_id)
+
+    if not messages:
+        with st.chat_message("assistant", avatar="🛡️"):
+            st.markdown(
+                "**NEXUS Intelligence Terminal active.** All inquiries are evaluated against "
+                "locally indexed, authorized technical documentation. Answers provide exact source citations "
+                "and page references. If sufficient evidence is absent, the system will explicitly abstain."
+            )
+            st.info(
+                "💡 **Operational Tip**: Submit inquiries such as *'What is the standard hydraulic pressure?'* "
+                "or *'What are the emergency exposure protocols?'*. Answers will cite grounded `[REF-X]` sources."
+            )
+    else:
+        for msg in messages:
+            role = msg["role"]
+            content = msg["content"]
+            citations = msg.get("citations", [])
+            ts = msg.get("created_at", "")[:19]
+
+            if role == "user":
+                with st.chat_message("user", avatar="🧑‍💻"):
+                    st.markdown(f"**Operator Inquiry** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
+                    st.markdown(content)
+            else:
+                with st.chat_message("assistant", avatar="🛡️"):
+                    st.markdown(f"**NEXUS Grounded Synthesis** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
+                    
+                    if ABSTENTION_MESSAGE in content or "insufficient verified information" in content.lower():
+                        st.warning(content)
+                    else:
+                        st.markdown(content)
+
+                    if citations:
+                        render_citations_list(citations)
 
     # Chat Input Box
     user_query = st.chat_input("Enter natural language query or technical inquiry...")
     if user_query:
-        now_ts = datetime.now().strftime("%H:%M:%S")
-        st.session_state["messages"].append({
-            "role": "user",
-            "content": user_query,
-            "timestamp": now_ts,
-            "citations": []
-        })
-
-        with st.chat_message("assistant", avatar="🛡️"):
-            with st.spinner("Executing semantic retrieval across local knowledge vault..."):
-                retriever = SemanticRetriever()
-                retrieval_res = retriever.retrieve_evidence(
-                    query=user_query,
-                    user_id=user_id,
-                    username=username,
-                    domain=domain_filter if domain_filter != "all" else None
-                )
-
-                if retrieval_res["is_sufficient"]:
-                    citations = retrieval_res["citations"]
-                    top_cite = citations[0]
-                    response_content = (
-                        f"**Evidence Retrieved ({len(citations)} source passages):**\n\n"
-                        f"> Primary Ground Truth Reference: **{top_cite['filename']}** (Page {top_cite['page_number']}, Relevance: {top_cite['relevance_score']*100:.1f}%)\n\n"
-                        f"**Relevant Passages:**\n\n"
-                    )
-                    for idx, c in enumerate(citations[:2], 1):
-                        response_content += f"*{idx}.* \"{c['passage'][:300]}...\"\n\n"
-                    response_content += (
-                        "> [!NOTE]\n"
-                        "> In Phase 7, the local Qwen2.5 1.5B model synthesizes these exact retrieved passages "
-                        "into a coherent grounded summary."
-                    )
-                else:
-                    citations = []
-                    response_content = (
-                        "> [!WARNING]\n"
-                        "> **INSUFFICIENT EVIDENCE DETECTED (Abstention Policy Active)**\n"
-                        "> No authorized technical documents in the local vault satisfied the required relevance threshold "
-                        f"({retrieval_res['similarity_threshold']*100:.0f}%) for this query in scope `{domain_filter.upper()}`.\n\n"
-                        "To prevent hallucinations, NEXUS abstains from answering until relevant documentation is uploaded and approved."
-                    )
-                st.markdown(response_content)
-                if citations:
-                    render_citations_list(citations)
-
-        st.session_state["messages"].append({
-            "role": "assistant",
-            "content": response_content,
-            "timestamp": datetime.now().strftime("%H:%M:%S"),
-            "citations": citations
-        })
+        with st.spinner("Querying vector repository & generating grounded answer..."):
+            rag_engine = get_default_rag_engine()
+            rag_engine.answer_query(
+                query=user_query,
+                user_id=user_id,
+                username=username,
+                domain=domain_filter if domain_filter != "all" else None,
+                conversation_id=active_conv_id
+            )
         st.rerun()

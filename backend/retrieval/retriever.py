@@ -233,3 +233,9 @@ class SemanticRetriever:
                 "Insufficient evidence: No indexed document passages satisfied the required relevance threshold."
             )
         }
+
+
+def get_default_retriever() -> SemanticRetriever:
+    """Return a default configured SemanticRetriever instance."""
+    return SemanticRetriever()
+

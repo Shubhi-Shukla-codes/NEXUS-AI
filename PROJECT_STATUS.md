@@ -78,12 +78,14 @@
   - [x] Streamlit Chat view updated with interactive semantic evidence query and live citation inspection (`frontend/views/chat.py`).
   - [x] 66 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 7: Local LLM and RAG**
-  - [ ] Ollama API client integration for `qwen2.5:1.5b`.
-  - [ ] Grounded prompt templating with strict provenance enforcement.
-  - [ ] Grounded answer synthesis with page-level citations.
-  - [ ] Automated abstention when evidence is insufficient or irrelevant.
-  - [ ] Multi-turn conversation persistence in SQLite.
+- [x] **PHASE 7: Local LLM and RAG**
+  - [x] Ollama API client integration for `qwen2.5:1.5b` (`backend/generation/ollama_client.py`).
+  - [x] Grounded prompt templating with strict provenance enforcement (`NEXUS_SYSTEM_PROMPT`).
+  - [x] Grounded answer synthesis with page-level citations (`backend/generation/rag_engine.py`).
+  - [x] Automated abstention when evidence is insufficient or irrelevant without running unnecessary inference.
+  - [x] Multi-turn conversation persistence in SQLite (`backend/services/conversation_service.py`).
+  - [x] Interactive conversational Grounded RAG Chat view with thread management (`frontend/views/chat.py`).
+  - [x] 72 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 8: Advanced Search and Domain Modules**
   - [ ] Hybrid search (dense semantic + keyword BM25).
@@ -109,4 +111,4 @@
 ---
 
 ## Current Status Summary
-Phase 6 (Semantic Retrieval) is complete and verified with 66 passing unit/integration tests. Next step: Phase 7 (Local LLM and Grounded RAG).
+Phase 7 (Local LLM and Grounded RAG) is complete and verified with 72 passing unit/integration tests. Next step: Phase 8 (Advanced Search and Domain Modules).

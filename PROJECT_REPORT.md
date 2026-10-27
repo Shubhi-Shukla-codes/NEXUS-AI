@@ -130,3 +130,15 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 66 automated tests passed in 48.74s across unit, security, and integration suites.
   - Tested query retrieval, abstention below threshold, Top-K limits, domain scoping, empty query handling, and unauthorized permission blocking.
+
+### Milestone 7: Local LLM & Grounded RAG Synthesis
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - Local Ollama client (`backend/generation/ollama_client.py`): Supports local REST inference (`/api/generate` & `/api/chat`) for `qwen2.5:1.5b` with CPU parameter tuning (temperature=0.1, max_tokens=1024, context=2048). Provides deterministic `MockLLMClient` for air-gapped unit testing and CI.
+  - Strict provenance prompting (`NEXUS_SYSTEM_PROMPT`): Directs model to act as a domain-specific intelligence terminal, basing answers exclusively on provided references, citing sources via `[REF-1]`, `[REF-2]`, and strictly abstaining without hallucination when information is lacking.
+  - Grounded RAG engine (`backend/generation/rag_engine.py`): Integrates retriever and LLM. Implements zero-compute abstention (skips LLM entirely when evidence falls below threshold), builds formatted context blocks, and parses answer text to map citations back to chunk metadata.
+  - SQLite Conversation & Message persistence (`backend/services/conversation_service.py`): Thread management with automatic title generation, multi-turn history tracking, and JSON citation persistence.
+  - Tactical Chat UI integration (`frontend/views/chat.py`): Interactive briefing thread management (create, switch, delete), live LLM synthesis display, inline `[REF-X]` citations cards, and tactical abstention alerts.
+- **Validation**:
+  - 72 automated tests passed in 50.96s across unit, security, and integration suites.
+  - Validated conversation thread lifecycle, mock LLM generation, grounded prompt assembly, citation mapping, threshold abstention, and empty query safety.
