@@ -22,8 +22,8 @@ This document describes the high-level architecture, subsystem boundaries, data 
 |   [Dashboard]  [Conversational Workspace]  [Repository]  [Ingestion]      |
 |   [Analytics & Evaluation]                 [Settings & User Admin]       |
 +--------------------------------------------------------------------------+
-                                     |
-                                     v
+                                     │
+                                     ▼
 +--------------------------------------------------------------------------+
 |                       APPLICATION & SERVICE LAYER                        |
 |  +--------------------+  +--------------------+  +--------------------+  |
@@ -31,16 +31,16 @@ This document describes the high-level architecture, subsystem boundaries, data 
 |  |  - RBAC & Sessions |  |  - Parsers (PDF/..) |  |  - Dense Embeddings|  |
 |  |  - Audit Logger    |  |  - Chunking Engine |  |  - Top-K Ranker    |  |
 |  +--------------------+  +--------------------+  +--------------------+  |
-|                                     |                      |             |
-|                                     v                      v             |
+|                                     │                      │             |
+|                                     ▼                      ▼             |
 |                          +--------------------+  +--------------------+  |
 |                          | Generation Engine  |  | Evaluation Engine  |  |
 |                          |  - Grounded RAG    |  |  - P@K, MRR, nDCG  |  |
 |                          |  - Local Ollama    |  |  - Faithfulness    |  |
 |                          +--------------------+  +--------------------+  |
 +--------------------------------------------------------------------------+
-                                     |
-                                     v
+                                     │
+                                     ▼
 +--------------------------------------------------------------------------+
 |                          PERSISTENCE LAYER                               |
 |   +------------------------------------+   +--------------------------+  |
@@ -54,6 +54,56 @@ This document describes the high-level architecture, subsystem boundaries, data 
 |   | - SHA-256 hashed storage, path sanitization, read-only vaults    |   |
 |   +------------------------------------------------------------------+   |
 +--------------------------------------------------------------------------+
+```
+
+---
+
+## 3. Relational Schema Architecture (SQLite)
+
+The database layer consists of 15 normalized tables structured to enforce data integrity:
+
+1. **`users`**: Unique usernames, emails, bcrypt-hashed passwords, and activation flags.
+2. **`roles`**: Initial roles (`administrator`, `instructor`, `trainee`, `authorised_user`).
+3. **`permissions`**: Granular capability codes (`user:manage`, `doc:upload`, `doc:approve`, `doc:view`, `doc:delete`, `app:configure`, `audit:view`).
+4. **`user_roles`**: Many-to-many junction linking users to roles with cascade deletions.
+5. **`role_permissions`**: Many-to-many junction mapping roles to authorized permissions.
+6. **`sessions`**: Cryptographic session tokens stored as SHA-256 digests with explicit expiration timestamps.
+7. **`documents`**: Document metadata, SHA-256 file fingerprints, vault paths, MIME types, and approval lifecycle states.
+8. **`document_pages`**: Page-level extraction boundaries.
+9. **`document_chunks`**: Stable UUIDs for chunked passages linked to vector embeddings.
+10. **`document_permissions`**: Document-level access control lists.
+11. **`conversations` & `messages`**: Multi-turn dialog persistence with citation payloads.
+12. **`audit_logs`**: Tamper-evident logging of security, authentication, and administrative actions.
+13. **`application_settings`**: Key-value JSON application preferences.
+14. **`schema_version`**: Controlled schema evolution tracking.
+
+---
+
+## 4. Authentication & Security Flow
+
+```
+[Operator Input]
+       │
+       ▼
+[Sanitization & Validation: regex, min 8 chars]
+       │
+       ▼
+[User Retrieval: SQLite Indexed Query]
+       │
+       ▼
+[Bcrypt Constant-Time Verification: bcrypt.checkpw(plain, hash)]
+       │
+       ▼
+[Cryptographic Session Creation: secrets.token_urlsafe(32)]
+       │
+       ▼
+[Token Hashing: SHA-256 stored in sessions table]
+       │
+       ▼
+[Role & Permission Assembly: Distinct permissions compiled into session]
+       │
+       ▼
+[Audit Logging: AUTH_LOGIN_SUCCESS recorded without passwords/tokens]
 ```
 
 ---

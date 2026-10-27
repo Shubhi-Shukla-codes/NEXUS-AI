@@ -28,12 +28,16 @@
   - [x] Database-backed real metrics display (zero fabricated stats policy).
   - [x] Unit test suite passed for UI components and theme tokens (`tests/unit/test_frontend.py`).
 
-- [ ] **PHASE 2: Database and Authentication**
-  - [ ] SQLite schema design with foreign keys, indexes, and migrations.
-  - [ ] Cryptographic password hashing (bcrypt / PBKDF2 fallback).
-  - [ ] Session management and state persistence.
-  - [ ] Role-Based Access Control (Admin, Instructor, Trainee, Authorised User).
-  - [ ] Structured audit logging engine.
+- [x] **PHASE 2: Database and Authentication**
+  - [x] SQLite schema design with foreign keys, indexes, and migrations (`backend/storage/schema.py`).
+  - [x] Connection manager with WAL mode and transaction rollback (`backend/storage/db.py`).
+  - [x] Cryptographic password hashing using bcrypt (`backend/security/crypto.py`).
+  - [x] Session management with SHA-256 hashed token storage (`backend/security/auth.py`).
+  - [x] Role-Based Access Control with 4 initial roles and 7 permissions (`backend/security/rbac.py`).
+  - [x] Structured audit logging engine (`backend/security/audit.py`).
+  - [x] Streamlit login view connected to database authentication with initial bootstrap.
+  - [x] Permission-aware navigation and session logout invalidation.
+  - [x] 28 comprehensive tests passed across unit and security test suites.
 
 - [ ] **PHASE 3: Document Repository**
   - [ ] Upload handling with SHA-256 fingerprinting.

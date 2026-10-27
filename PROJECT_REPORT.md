@@ -65,3 +65,18 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
   - Virtual environment `.venv` with `streamlit-1.66.1`.
   - 11 unit tests passed across foundation and frontend test suites.
   - Zero syntax/byte-compilation errors.
+
+### Milestone 2: Relational Database & Role-Based Authentication
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - SQLite relational schema (`backend/storage/schema.py`) with 15 normalized tables, foreign keys, cascade deletes, and B-Tree indexes.
+  - Connection manager with context handling, WAL mode, and automatic rollback (`backend/storage/db.py`).
+  - Cryptographic security engine (`backend/security/crypto.py`) using `bcrypt` (12 rounds) and `secrets.token_urlsafe(32)`.
+  - Token hashing: Raw session tokens never stored; stored as SHA-256 digests in `sessions` table.
+  - Role-Based Access Control (`backend/security/rbac.py`) with 4 baseline roles (Administrator, Instructor, Trainee, Authorised User) and 7 granular permissions.
+  - Independent backend permission enforcement via `enforce_permission` (raising `AuthorizationError` on unauthorized attempts).
+  - Structured audit trail engine (`backend/security/audit.py`) with sensitive payload stripping.
+  - Streamlit UI integration: `login.py` connected to database authentication, automatic initial administrator bootstrap (`admin` / `Admin@Nexus2026!`), and permission-filtered navigation.
+- **Validation**:
+  - 28 unit and security tests passed in 11.65 seconds via `pytest`.
+  - Isolated temporary SQLite test databases used for all assertions.

@@ -65,6 +65,13 @@ pytest tests/
 streamlit run app.py
 ```
 
+### Initial Administrator Access
+Upon initial launch, NEXUS automatically initializes the SQLite schema and creates the default bootstrap administrator:
+- **Username**: `admin`
+- **Password**: `Admin@Nexus2026!`
+
+*(Administrators can immediately create new operators with Trainee, Instructor, or Authorised User clearances directly from the welcome screen).*
+
 ## 6. Project Structure
 
 ```text

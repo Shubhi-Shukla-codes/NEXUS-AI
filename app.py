@@ -13,6 +13,8 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from backend.config import settings
+from backend.storage.db import init_database
+from backend.security.auth import validate_session, ensure_initial_admin
 from frontend.components.sidebar import render_sidebar
 from frontend.views.dashboard import render_dashboard_view
 from frontend.views.chat import render_chat_view
@@ -32,15 +34,28 @@ def load_custom_css() -> None:
 
 
 def init_session_state() -> None:
-    """Ensure baseline session variables exist with safe defaults."""
+    """Ensure baseline session variables and validate persistent tokens."""
+    # Ensure database is bootstrapped
+    init_database()
+    ensure_initial_admin()
+
     if "authenticated" not in st.session_state:
-        # Default to False; operator can sign in or bypass via role selector
-        st.session_state["authenticated"] = True
-        st.session_state["user"] = {
-            "username": "operator",
-            "role": "administrator",
-            "role_display": "Administrator"
-        }
+        st.session_state["authenticated"] = False
+        st.session_state["user"] = None
+        st.session_state["session_token"] = None
+
+    # If session_token exists, validate against SQLite sessions table
+    token = st.session_state.get("session_token")
+    if token and not st.session_state.get("authenticated", False):
+        session_user = validate_session(token)
+        if session_user:
+            st.session_state["authenticated"] = True
+            st.session_state["user"] = session_user
+        else:
+            st.session_state["authenticated"] = False
+            st.session_state["user"] = None
+            st.session_state["session_token"] = None
+
     if "current_view" not in st.session_state:
         st.session_state["current_view"] = "dashboard"
     if "active_domain" not in st.session_state:
