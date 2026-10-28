@@ -15,6 +15,28 @@ if str(PROJECT_ROOT) not in sys.path:
 from backend.config import settings
 from backend.storage.db import init_database
 from backend.security.auth import validate_session, ensure_initial_admin
+
+import importlib
+import frontend.components.header
+import frontend.components.sidebar
+import frontend.views.dashboard
+import frontend.views.chat
+import frontend.views.repository
+import frontend.views.ingest
+import frontend.views.analytics
+import frontend.views.settings
+import frontend.views.login
+
+importlib.reload(frontend.components.header)
+importlib.reload(frontend.components.sidebar)
+importlib.reload(frontend.views.dashboard)
+importlib.reload(frontend.views.chat)
+importlib.reload(frontend.views.repository)
+importlib.reload(frontend.views.ingest)
+importlib.reload(frontend.views.analytics)
+importlib.reload(frontend.views.settings)
+importlib.reload(frontend.views.login)
+
 from frontend.components.sidebar import render_sidebar
 from frontend.views.dashboard import render_dashboard_view
 from frontend.views.chat import render_chat_view
