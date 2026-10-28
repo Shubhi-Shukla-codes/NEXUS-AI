@@ -14,15 +14,12 @@ from frontend.components.header import render_header
 def render_dashboard_view() -> None:
     """Render system telemetry and operational metrics."""
     domain_filter = st.session_state.get("active_domain", "all")
-    render_header("OPERATIONAL DASHBOARD", domain_label=domain_filter)
+    render_header("OPERATIONAL DASHBOARD", domain_label=domain_filter, show_badges=False)
 
     # Tactical Hero Banner with camouflage texture
     st.markdown(
         """
         <div class="nexus-camo-hero">
-            <div style="font-family: Consolas, monospace; font-size: 0.8rem; color: #D6C6A5; letter-spacing: 0.1em; text-transform: uppercase;">
-                COMMAND TELEMETRY // SYSTEM STATUS: ACTIVE
-            </div>
             <div style="font-size: 1.6rem; font-weight: 800; color: #F4F2E9; margin: 4px 0 8px 0;">
                 NEXUS Tactical Knowledge Intelligence Engine
             </div>
