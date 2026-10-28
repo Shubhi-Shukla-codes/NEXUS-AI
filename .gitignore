@@ -39,6 +39,7 @@ venv.bak/
 *.key
 
 # Data Vault, DBs, and Vector Store (Confidential/Local Data)
+NEXUS 2/
 data/database/*.db
 data/database/*.sqlite
 data/database/*.sqlite3
