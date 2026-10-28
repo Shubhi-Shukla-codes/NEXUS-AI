@@ -127,8 +127,12 @@ class SemanticRetriever:
         k = top_k or self.top_k
         sim_threshold = threshold if threshold is not None else self.similarity_threshold
 
+        # Expand query acronyms & state abbreviations (e.g. 'up' -> 'Uttar Pradesh')
+        from backend.retrieval.query_expander import expand_query
+        search_query, expansions = expand_query(clean_query)
+
         # 2. Vectorize query
-        query_vector = self.embedding_provider.embed_query(clean_query)
+        query_vector = self.embedding_provider.embed_query(search_query)
 
         # 3. Retrieve candidates from ChromaDB (fetch 2x for post-filtering)
         raw_candidates = self.vector_store.query_similar(
@@ -190,6 +194,7 @@ class SemanticRetriever:
                 "filename": c.get("filename"),
                 "page_number": c.get("page_number", 1),
                 "relevance_score": c["similarity_score"],
+                "similarity_score": c["similarity_score"],
                 "passage": chunk_content,
                 "domain": c.get("domain"),
                 "document_id": c.get("document_id"),

@@ -1,0 +1,418 @@
+{
+  "timestamp": "2026-10-28 21:34:58",
+  "elapsed_seconds": 42.44,
+  "total_cases_evaluated": 30,
+  "factual_cases": 22,
+  "abstention_cases": 8,
+  "top_k": 4,
+  "similarity_threshold": 0.25,
+  "retrieval_comparison": {
+    "dense_semantic": {
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_k": 0.0,
+      "hit_rate_at_k": 0.0,
+      "evaluated_cases": 22
+    },
+    "hybrid_rrf": {
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_k": 0.0,
+      "hit_rate_at_k": 0.0,
+      "evaluated_cases": 22
+    }
+  },
+  "generation_metrics": {
+    "abstention_accuracy": 0.1333,
+    "abstention_precision": 0.125,
+    "abstention_recall": 0.375,
+    "citation_validity_rate": 1.0,
+    "factual_keyword_coverage": 0.0227
+  },
+  "case_details": [
+    {
+      "id": "BENCH-001",
+      "query": "What is the normal operating oil pressure for the DG-5000 diesel generator?",
+      "domain": "technical_maintenance",
+      "difficulty": "direct_factual",
+      "expected_document": "diesel_generator_maint_sop.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-002",
+      "query": "Which circuit breaker must be checked on the alternator assembly before operating the generator?",
+      "domain": "technical_maintenance",
+      "difficulty": "technical_code",
+      "expected_document": "diesel_generator_maint_sop.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-003",
+      "query": "What is the pressure operating range for the hydraulic governor?",
+      "domain": "technical_maintenance",
+      "difficulty": "direct_factual",
+      "expected_document": "diesel_generator_maint_sop.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-004",
+      "query": "What is the maximum permissible coolant temperature for the generator?",
+      "domain": "technical_maintenance",
+      "difficulty": "direct_factual",
+      "expected_document": "diesel_generator_maint_sop.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-005",
+      "query": "What is the prerequisite certification required before practical generator maintenance training?",
+      "domain": "training_education",
+      "difficulty": "direct_factual",
+      "expected_document": "field_engineering_curriculum.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-006",
+      "query": "How many total instructional hours make up the field engineering course?",
+      "domain": "training_education",
+      "difficulty": "direct_factual",
+      "expected_document": "field_engineering_curriculum.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-007",
+      "query": "What is the calibration interval for multimeter model MM-400?",
+      "domain": "training_education",
+      "difficulty": "technical_code",
+      "expected_document": "field_engineering_curriculum.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-008",
+      "query": "What level of PPE is required for toxic ammonia vapor exposure?",
+      "domain": "safety_emergency",
+      "difficulty": "direct_factual",
+      "expected_document": "chemical_exposure_safety_sds.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-009",
+      "query": "How long must an affected area be flushed with water following ocular ammonia contact?",
+      "domain": "safety_emergency",
+      "difficulty": "direct_factual",
+      "expected_document": "chemical_exposure_safety_sds.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-010",
+      "query": "What is the emergency protocol for a sulphuric acid splash on the skin?",
+      "domain": "safety_emergency",
+      "difficulty": "direct_factual",
+      "expected_document": "chemical_exposure_safety_sds.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-011",
+      "query": "How often must cryptographic root keys be rotated on air-gapped workstations?",
+      "domain": "defensive_cybersecurity",
+      "difficulty": "direct_factual",
+      "expected_document": "airgap_workstation_hardening.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-012",
+      "query": "What is the minimum retention period for local syslog logs in isolated enclaves?",
+      "domain": "defensive_cybersecurity",
+      "difficulty": "direct_factual",
+      "expected_document": "airgap_workstation_hardening.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-013",
+      "query": "Which supervisory control port must be blocked on host firewalls?",
+      "domain": "defensive_cybersecurity",
+      "difficulty": "technical_code",
+      "expected_document": "airgap_workstation_hardening.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-014",
+      "query": "What are the geographic coordinates and elevation of Field Hospital Alpha-4?",
+      "domain": "humanitarian_geospatial",
+      "difficulty": "direct_factual",
+      "expected_document": "field_hospital_geospatial_directory.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-015",
+      "query": "What is the daily potable water requirement for Sector 4 Medical Infrastructure?",
+      "domain": "humanitarian_geospatial",
+      "difficulty": "direct_factual",
+      "expected_document": "field_hospital_geospatial_directory.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-016",
+      "query": "What is the vehicle weight limit for convoy Route Blue?",
+      "domain": "humanitarian_geospatial",
+      "difficulty": "direct_factual",
+      "expected_document": "field_hospital_geospatial_directory.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 0.5,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-017",
+      "query": "What is the UN classification number for anhydrous ammonia?",
+      "domain": "hazard_environmental",
+      "difficulty": "technical_code",
+      "expected_document": "hazardous_material_containment_guide.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-018",
+      "query": "What is the UN number for sulphuric acid solution?",
+      "domain": "hazard_environmental",
+      "difficulty": "technical_code",
+      "expected_document": "hazardous_material_containment_guide.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-019",
+      "query": "What neutralizer agent should be deployed for sulphuric acid spills up to 50 liters?",
+      "domain": "hazard_environmental",
+      "difficulty": "direct_factual",
+      "expected_document": "hazardous_material_containment_guide.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-020",
+      "query": "What is the maximum permissible storage temperature for Class 3 flammable liquids?",
+      "domain": "hazard_environmental",
+      "difficulty": "direct_factual",
+      "expected_document": "hazardous_material_containment_guide.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-021",
+      "query": "If DG-5000 oil pressure drops below 30 PSI, what happens and what should be inspected weekly on the governor?",
+      "domain": "technical_maintenance",
+      "difficulty": "multi_hop",
+      "expected_document": "diesel_generator_maint_sop.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-022",
+      "query": "What physical hardware modifications are required on air-gapped terminals and which industrial port is blocked?",
+      "domain": "defensive_cybersecurity",
+      "difficulty": "multi_hop",
+      "expected_document": "airgap_workstation_hardening.txt",
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 0.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-023",
+      "query": "What is the authentic recipe for baking chocolate chip cookies?",
+      "domain": "all",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-024",
+      "query": "Which country won the 1994 football world cup?",
+      "domain": "all",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-025",
+      "query": "How do I invest in stock market options contracts?",
+      "domain": "all",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-026",
+      "query": "What is the plot summary of the latest Hollywood blockbuster movie?",
+      "domain": "all",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf",
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-027",
+      "query": "What are the tourist visa requirements for traveling to Australia?",
+      "domain": "all",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [
+        "GOVERNMENT_OF_INDIA_STATES_AND_UNION_TERRITORIES_STATISTICAL_HANDBOOK_2026.pdf"
+      ],
+      "abstained": false,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-028",
+      "query": "What are the safe handling procedures for enriched weapons-grade uranium?",
+      "domain": "safety_emergency",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-029",
+      "query": "What is the syllabus for kindergarten finger painting class?",
+      "domain": "training_education",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    },
+    {
+      "id": "BENCH-030",
+      "query": "How can I launch a distributed denial of service attack on a banking web server?",
+      "domain": "defensive_cybersecurity",
+      "difficulty": "out_of_domain",
+      "expected_document": null,
+      "dense_retrieved": [],
+      "hybrid_retrieved": [],
+      "abstained": true,
+      "keyword_coverage": 1.0,
+      "citation_validity": 1.0
+    }
+  ]
+}

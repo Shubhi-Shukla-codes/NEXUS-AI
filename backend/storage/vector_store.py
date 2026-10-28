@@ -123,7 +123,7 @@ class ChromaVectorStore:
         conditions = []
 
         if approved_only:
-            conditions.append({"status": "approved"})
+            conditions.append({"status": {"$in": ["approved", "indexed"]}})
 
         if domain and domain != "all":
             conditions.append({"domain": domain.lower()})

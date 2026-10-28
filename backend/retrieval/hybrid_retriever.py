@@ -65,7 +65,7 @@ class HybridRetriever:
             candidate_map[chunk_id] = {
                 **item,
                 "dense_rank": rank,
-                "dense_score": item.get("similarity_score", 0.0),
+                "dense_score": item.get("similarity_score", item.get("relevance_score", 0.0)),
                 "sparse_score": 0.0,
                 "sparse_rank": None
             }
@@ -175,8 +175,10 @@ class HybridRetriever:
             approved_only=True,
             custom_path=custom_path
         )
+        from backend.retrieval.query_expander import expand_query
+        search_query, _ = expand_query(clean_query)
         sparse_candidates = bm25_index.search(
-            query=clean_query,
+            query=search_query,
             top_k=k * 2,
             domain=target_domain
         )
