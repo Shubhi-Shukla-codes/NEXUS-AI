@@ -153,3 +153,16 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 78 automated tests passed in 59.29s across all unit, security, and integration suites.
   - Validated technical tokenization, BM25 exact code retrieval, domain taxonomy matching, RRF candidate rank fusion, hybrid retrieval pipeline, and hybrid RAG generation.
+
+### Milestone 9: Evaluation Framework, Quantitative IR Benchmark, & Seed Corpus
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - Curated seed document collection (`backend/evaluation/benchmark_dataset.py`, `seed_dataset.py`): 6 authoritative, non-sensitive public/synthetic domain documents with full multi-page content across all pillars (Diesel Generator SOP, Field Engineering Rubric, Chemical SDS, Air-Gap Hardening Standard, Field Hospital Logistics Directory, Hazardous Material Guide).
+  - 30-case evaluation benchmark suite (`BENCHMARK_CASES`): Balanced across Direct Factual, Technical Codes, Multi-Hop Synthesis, and 8 Out-of-Domain Abstention test cases.
+  - Quantitative Information Retrieval metrics engine (`backend/evaluation/retrieval_metrics.py`): Computes Precision@K, Recall@K, Mean Reciprocal Rank (MRR), Discounted Cumulative Gain (DCG@K), and Normalized Discounted Cumulative Gain (nDCG@K).
+  - Generation Faithfulness & Abstention Evaluator (`backend/evaluation/faithfulness.py`): Computes citation validity rate against context passages, key concept keyword coverage, and binary confusion matrix for abstention accuracy.
+  - Benchmark execution runner (`backend/evaluation/runner.py`): Automatically benchmarks Dense Semantic vs Hybrid RRF retrieval modes, calculates macro-averaged performance deltas, and saves structured JSON reports (`data/evaluation_report.json`).
+  - Tactical Streamlit Analytics View (`frontend/views/analytics.py`): Displays real empirical IR comparison tables, MRR / nDCG KPI cards, and interactive test case explorer with one-click seed and benchmark triggers.
+- **Validation**:
+  - 87 automated tests passed in 61.54s across all unit, security, and integration suites.
+  - Validated P@K, Recall@K, MRR, nDCG@K, citation validity, keyword coverage, abstention confusion matrix, benchmark schema integrity, and end-to-end evaluation runner.

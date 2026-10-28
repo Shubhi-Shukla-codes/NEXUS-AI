@@ -95,11 +95,14 @@
   - [x] Grounded RAG integration with selectable search modes (Hybrid RRF vs Dense Semantic) in Chat view (`frontend/views/chat.py`).
   - [x] 78 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 9: Dataset and Evaluation Framework**
-  - [ ] Curated demonstration dataset (public + synthetic).
-  - [ ] Evaluation benchmark suite (30-50 questions with ground truth).
-  - [ ] Retrieval metrics calculation (P@K, Recall@K, MRR, nDCG).
-  - [ ] Answer faithfulness and hallucination evaluation.
+- [x] **PHASE 9: Dataset and Evaluation Framework**
+  - [x] Curated institutional domain seed corpus (6 documents across all core pillars) (`backend/evaluation/benchmark_dataset.py`, `seed_dataset.py`).
+  - [x] Evaluation benchmark suite with 30 ground truth cases across 4 difficulty tiers including out-of-domain abstention probes.
+  - [x] Quantitative Information Retrieval metrics engine: Precision@K, Recall@K, Mean Reciprocal Rank (MRR), and nDCG@K (`backend/evaluation/retrieval_metrics.py`).
+  - [x] Generation faithfulness, citation validity checking, and abstention confusion matrix evaluator (`backend/evaluation/faithfulness.py`).
+  - [x] Benchmark runner comparing Dense vs Hybrid RRF retrieval and persisting reports (`backend/evaluation/runner.py`).
+  - [x] Upgraded interactive Analytics & Research view with live benchmark runner and comparative IR table (`frontend/views/analytics.py`).
+  - [x] 87 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 10: Multimodal Expansion**
   - [ ] OCR pipeline for scanned documents and diagrams.
@@ -114,4 +117,4 @@
 ---
 
 ## Current Status Summary
-Phase 8 (Advanced Search and Domain Modules) is complete and verified with 78 passing unit/integration tests. Next step: Phase 9 (Dataset and Evaluation Framework).
+Phase 9 (Dataset and Evaluation Framework) is complete and verified with 87 passing unit/integration tests. Next step: Phase 10 (Multimodal Expansion).
