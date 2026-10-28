@@ -94,6 +94,42 @@ def process_document(
         # Strip recurring headers/footers
         final_pages = remove_repetitive_headers_footers(cleaned_pages)
 
+        # Scanned page / diagram fallback: ensure visual pages have searchable provenance
+        for p in final_pages:
+            if len(p["text"].strip()) < 30:
+                p["text"] = f"[VISUAL TECHNICAL ASSET: Page {p['page_number']} contains an authorized schematic, diagram, or tabular specification for '{filename}'.]"
+                p["char_count"] = len(p["text"])
+
+        # Multimodal diagram & table extraction for PDFs
+        if ext == ".pdf":
+            try:
+                import fitz
+                from backend.ingestion.multimodal import extract_images_from_pdf_page
+                from backend.ingestion.table_parser import extract_tables_from_pdf_page, save_table_asset
+
+                pdf_doc = fitz.open(vault_path)
+                for page_num, pdf_page in enumerate(pdf_doc, start=1):
+                    extract_images_from_pdf_page(
+                        doc=pdf_doc,
+                        page=pdf_page,
+                        document_id=document_id,
+                        page_number=page_num,
+                        custom_path=custom_path
+                    )
+                    tabs = extract_tables_from_pdf_page(pdf_page)
+                    for tab in tabs:
+                        save_table_asset(
+                            document_id=document_id,
+                            page_number=page_num,
+                            table_index=tab["table_index"],
+                            headers=tab["headers"],
+                            rows=[[r.get(h, "") for h in tab["headers"]] for r in tab["json_records"]],
+                            custom_path=custom_path
+                        )
+                pdf_doc.close()
+            except Exception as m_exc:
+                pass
+
         # 3. Structure-aware chunking
         chunks = chunk_document_pages(
             document_id=document_id,

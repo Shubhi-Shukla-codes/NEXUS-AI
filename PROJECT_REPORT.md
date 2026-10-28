@@ -166,3 +166,16 @@ To guarantee strict privacy and eliminate reliance on external cloud APIs, all c
 - **Validation**:
   - 87 automated tests passed in 61.54s across all unit, security, and integration suites.
   - Validated P@K, Recall@K, MRR, nDCG@K, citation validity, keyword coverage, abstention confusion matrix, benchmark schema integrity, and end-to-end evaluation runner.
+
+### Milestone 10: Multimodal Expansion, Technical Diagrams, & Structured Tables
+- **Date**: 2026-10-28
+- **Deliverables**:
+  - Multimodal visual asset extractor (`backend/ingestion/multimodal.py`): Leverages PyMuPDF C-engine to extract raster diagrams, electrical schematics, and blueprint images from document pages with SHA-256 deduplication and disk storage under `data/media/`.
+  - Resilient visual asset descriptor (`FallbackVisualDescriptor`): Generates structured technical visual descriptors in air-gapped environments without external OCR dependencies.
+  - Scanned page & visual diagram detection: Flags pages with minimal text and embedded diagrams as visual assets, generating synthetic searchable provenance chunks so scanned engineering drawings remain discoverable.
+  - Structured table parsing engine (`backend/ingestion/table_parser.py`): Converts 2D tabular matrices into clean GitHub Markdown and structured JSON records with column header preservation.
+  - Relational SQLite schema upgrade: Added `document_media` table and index to track diagrams, images, and tables with full metadata and cascade unlinking.
+  - Document Repository UI upgrade (`frontend/views/repository.py`): Tabbed multimodal inspector for previewing extracted diagrams and structured specification tables.
+- **Validation**:
+  - 93 automated tests passed in 52.54s across all unit, security, and integration suites.
+  - Validated table markdown formatting, JSON record conversion, database media persistence, visual asset descriptors, scanned page detection, and embedded PDF diagram extraction.

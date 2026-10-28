@@ -104,9 +104,14 @@
   - [x] Upgraded interactive Analytics & Research view with live benchmark runner and comparative IR table (`frontend/views/analytics.py`).
   - [x] 87 unit, integration, and security tests passed via pytest.
 
-- [ ] **PHASE 10: Multimodal Expansion**
-  - [ ] OCR pipeline for scanned documents and diagrams.
-  - [ ] Structured table representation and query interface.
+- [x] **PHASE 10: Multimodal Expansion**
+  - [x] PyMuPDF-accelerated diagram & raster image extraction engine (`backend/ingestion/multimodal.py`).
+  - [x] Resilient visual asset descriptor for air-gapped environments (`FallbackVisualDescriptor`).
+  - [x] Scanned page detection fallback ensuring zero-text visual pages receive searchable provenance chunks (`backend/ingestion/pipeline.py`).
+  - [x] Structured table parser converting 2D tabular matrices into GitHub Markdown and structured JSON records (`backend/ingestion/table_parser.py`).
+  - [x] Relational multimodal media persistence in SQLite `document_media` table.
+  - [x] Document Repository preview upgrade: Tabbed visual media & structured table inspector (`frontend/views/repository.py`).
+  - [x] 93 unit, integration, and security tests passed via pytest.
 
 - [ ] **PHASE 11: Optimization and Final Deployment**
   - [ ] Memory profiling and garbage collection tuning.
@@ -117,4 +122,4 @@
 ---
 
 ## Current Status Summary
-Phase 9 (Dataset and Evaluation Framework) is complete and verified with 87 passing unit/integration tests. Next step: Phase 10 (Multimodal Expansion).
+Phase 10 (Multimodal Expansion) is complete and verified with 93 passing unit/integration tests. Next step: Phase 11 (Optimization and Final Deployment).

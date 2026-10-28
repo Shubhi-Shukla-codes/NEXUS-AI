@@ -71,6 +71,35 @@ def render_repository_view() -> None:
                     st.markdown(f"**Approved By:** `{doc_details.get('approver_name') or 'N/A'}`")
                     st.markdown(f"**SHA-256:** `{doc_details.get('file_hash')}`")
 
+                # Multimodal Assets Inspector (Extracted Tables and Diagrams)
+                from backend.ingestion.multimodal import list_document_media
+                media_assets = list_document_media(doc_details["id"])
+                if media_assets:
+                    st.markdown("<hr style='margin: 8px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
+                    st.markdown(f"**Extracted Multimodal Assets ({len(media_assets)} items):**")
+                    t_diag, t_tabs = st.tabs(["🖼️ Technical Diagrams & Schematics", "📊 Structured Tables"])
+                    
+                    with t_diag:
+                        diagrams = [m for m in media_assets if m["media_type"] in ("diagram", "image")]
+                        if not diagrams:
+                            st.caption("No raster diagrams detected in document pages.")
+                        else:
+                            for d in diagrams[:6]:
+                                st.caption(f"📌 {d['caption']} (Dimensions: `{d['dimensions']}`)")
+                                if d["file_path"] and Path(d["file_path"]).is_file():
+                                    st.image(d["file_path"], width=350)
+
+                    with t_tabs:
+                        tables = [m for m in media_assets if m["media_type"] == "table"]
+                        if not tables:
+                            st.caption("No structured tables detected in document pages.")
+                        else:
+                            for t in tables[:6]:
+                                st.caption(f"📋 {t['caption']}")
+                                md_tab = t["metadata"].get("markdown", "")
+                                if md_tab:
+                                    st.markdown(md_tab)
+
                 if st.button("Close Preview"):
                     st.session_state["preview_doc_id"] = None
                     st.rerun()

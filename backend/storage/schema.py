@@ -165,7 +165,20 @@ CREATE TABLE IF NOT EXISTS application_settings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 16. Indexes for High-Performance Queries
+-- 16. Document Media & Multimodal Assets Table
+CREATE TABLE IF NOT EXISTS document_media (
+    id TEXT PRIMARY KEY,
+    document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    page_number INTEGER NOT NULL,
+    media_type TEXT NOT NULL,
+    file_path TEXT,
+    caption TEXT,
+    dimensions TEXT,
+    metadata_json TEXT DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 17. Indexes for High-Performance Queries
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
@@ -173,6 +186,7 @@ CREATE INDEX IF NOT EXISTS idx_documents_file_hash ON documents(file_hash);
 CREATE INDEX IF NOT EXISTS idx_documents_domain ON documents(domain);
 CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
 CREATE INDEX IF NOT EXISTS idx_document_chunks_doc_id ON document_chunks(document_id);
+CREATE INDEX IF NOT EXISTS idx_doc_media_doc_id ON document_media(document_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id);
 CREATE INDEX IF NOT EXISTS idx_messages_conv_id ON messages(conversation_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_event ON audit_logs(event_type);
