@@ -47,6 +47,8 @@ data/vector_store/*
 !data/vector_store/.gitkeep
 data/vault/*
 !data/vault/.gitkeep
+data/media/*
+!data/media/.gitkeep
 data/exports/*
 !data/exports/.gitkeep
 data/sample_documents/*
