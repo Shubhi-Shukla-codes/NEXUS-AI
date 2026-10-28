@@ -129,6 +129,28 @@ def process_document(
                 pdf_doc.close()
             except Exception as m_exc:
                 pass
+        elif ext == ".xlsx":
+            try:
+                import openpyxl
+                from backend.ingestion.table_parser import save_table_asset
+                wb = openpyxl.load_workbook(str(vault_path), data_only=True, read_only=True)
+                for sheet_idx, sheet_name in enumerate(wb.sheetnames, start=1):
+                    ws = wb[sheet_name]
+                    rows = list(ws.iter_rows(values_only=True))
+                    if rows and len(rows) > 1:
+                        headers = [str(c or "").strip() for c in rows[0]]
+                        data_rows = rows[1:]
+                        save_table_asset(
+                            document_id=document_id,
+                            page_number=sheet_idx,
+                            table_index=1,
+                            headers=headers,
+                            rows=data_rows,
+                            custom_path=custom_path
+                        )
+                wb.close()
+            except Exception as x_exc:
+                pass
 
         # 3. Structure-aware chunking
         chunks = chunk_document_pages(

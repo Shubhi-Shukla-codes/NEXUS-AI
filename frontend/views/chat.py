@@ -82,6 +82,19 @@ def render_chat_view() -> None:
 
     st.markdown("<hr style='margin: 4px 0 10px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
+    # Targeted Document Banner (if set from repository)
+    target_doc_id = st.session_state.get("target_doc_id")
+    target_doc_title = st.session_state.get("target_doc_title")
+    if target_doc_id:
+        c_t_msg, c_t_btn = st.columns([4, 1.2])
+        with c_t_msg:
+            st.info(f"🎯 **Targeted Document Focus**: `{target_doc_title}`")
+        with c_t_btn:
+            if st.button("🌐 Clear Focus", use_container_width=True):
+                st.session_state["target_doc_id"] = None
+                st.session_state["target_doc_title"] = None
+                st.rerun()
+
     # Search Mode and Domain Telemetry
     col_mode, col_domain_info = st.columns([1.5, 2.5])
     with col_mode:
@@ -96,10 +109,10 @@ def render_chat_view() -> None:
     with col_domain_info:
         from backend.retrieval.domain_manager import get_domain_profile
         prof = get_domain_profile(domain_filter)
-        if prof:
+        if prof and not target_doc_id:
             st.caption(f"🛡️ **{prof.display_name}**: *{prof.description}*")
         else:
-            st.caption(f"🌐 Scope: `ALL DOMAINS` | Model: `Qwen2.5 1.5B (Ollama Local)` | Engine: `{mode_val.upper()}`")
+            st.caption(f"🌐 Scope: `ALL REPOSITORY DATA` | Model: `Qwen2.5 1.5B (Ollama Local)` | Engine: `{mode_val.upper()}`")
 
     st.markdown("<hr style='margin: 4px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
@@ -143,13 +156,14 @@ def render_chat_view() -> None:
     # Chat Input Box
     user_query = st.chat_input("Enter natural language query or technical inquiry...")
     if user_query:
+        effective_domain = None if (target_doc_id or domain_filter == "all") else domain_filter
         with st.spinner("Querying vector repository & generating grounded answer..."):
             rag_engine = get_default_rag_engine()
             rag_engine.answer_query(
                 query=user_query,
                 user_id=user_id,
                 username=username,
-                domain=domain_filter if domain_filter != "all" else None,
+                domain=effective_domain,
                 conversation_id=active_conv_id,
                 search_mode=mode_val
             )

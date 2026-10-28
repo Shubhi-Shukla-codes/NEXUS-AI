@@ -4,10 +4,15 @@ Provides replaceable embedding provider interfaces, lazy model loading,
 batch vector generation, and L2 vector normalization.
 """
 
+import os
 from abc import ABC, abstractmethod
 from typing import List, Optional
 import numpy as np
 from backend.config import settings
+
+# Enforce offline cache loading without repeated hub ping retries
+os.environ["HF_HUB_OFFLINE"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 
 class BaseEmbeddingProvider(ABC):
