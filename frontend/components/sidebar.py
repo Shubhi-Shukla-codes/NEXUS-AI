@@ -43,7 +43,7 @@ def render_sidebar() -> str:
 
         # Domain Scoping Selector
         st.markdown(
-            "<div style='font-size:0.72rem; font-family:Consolas,monospace; color:#D6C6A5; margin-bottom:4px; font-weight:700;'>DOMAIN SCOPE FILTER</div>",
+            "<div style='font-size:var(--font-size-label); font-family:var(--font-mono); color:#D6C6A5; margin-bottom:6px; font-weight:700; letter-spacing:0.06em;'>DOMAIN SCOPE FILTER</div>",
             unsafe_allow_html=True
         )
         selected_domain_idx = 0
@@ -67,7 +67,7 @@ def render_sidebar() -> str:
 
         # Tactical Navigation Menu (Filtered by Permissions)
         st.markdown(
-            "<div style='font-size:0.72rem; font-family:Consolas,monospace; color:#D6C6A5; margin-bottom:6px; font-weight:700;'>TACTICAL NAVIGATION</div>",
+            "<div style='font-size:var(--font-size-label); font-family:var(--font-mono); color:#D6C6A5; margin-bottom:8px; font-weight:700; letter-spacing:0.06em;'>TACTICAL NAVIGATION</div>",
             unsafe_allow_html=True
         )
 
@@ -88,11 +88,11 @@ def render_sidebar() -> str:
         # Telemetry Box
         st.markdown(
             """
-            <div style="background-color: #161D18; border: 1px solid #303E32; border-radius: 5px; padding: 10px 12px; margin-bottom: 12px;">
-                <div style="font-family: Consolas, monospace; font-size: 0.68rem; color: #D6C6A5; letter-spacing: 0.05em; margin-bottom: 5px; font-weight: 700;">
+            <div style="background-color: rgba(20, 29, 22, 0.82); border: 1px solid #303E32; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; backdrop-filter: var(--glass-blur);">
+                <div style="font-family: var(--font-mono); font-size: var(--font-size-label); color: #D6C6A5; letter-spacing: 0.06em; margin-bottom: 6px; font-weight: 700;">
                     SYSTEM TELEMETRY
                 </div>
-                <div style="font-size: 0.75rem; color: #BAC2B8; line-height: 1.55;">
+                <div style="font-family: var(--font-mono); font-size: var(--font-size-meta); color: #BAC2B8; line-height: 1.6;">
                     <div>• <b>RUNTIME:</b> <span style="color:#A5D6A7;">OFFLINE-LOCAL</span></div>
                     <div>• <b>AUTH:</b> <span style="color:#A5D6A7;">RBAC ACTIVE</span></div>
                     <div>• <b>LLM:</b> <span style="color:#F9E79F;">Qwen2.5 1.5B</span></div>
@@ -109,9 +109,9 @@ def render_sidebar() -> str:
             role = user.get("role", "USER")
             st.markdown(
                 f"""
-                <div style="background:#19221B; border:1px solid #303E32; padding:8px 10px; border-radius:4px; margin-bottom:10px;">
-                    <div style="font-size:0.75rem; color:#A4B0A3;">OPERATOR: <b style="color:#F4F2E9;">{username.upper()}</b></div>
-                    <div style="font-size:0.7rem; color:#D6C6A5; font-family:Consolas,monospace;">CLEARANCE: {role.upper()}</div>
+                <div style="background: rgba(22, 32, 24, 0.82); border: 1px solid #303E32; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; backdrop-filter: var(--glass-blur);">
+                    <div style="font-family: var(--font-display); font-size: 14px; color: #A4B0A3;">OPERATOR: <b style="color:#F4F2E9;">{username.upper()}</b></div>
+                    <div style="font-size: var(--font-size-meta); color: #D6C6A5; font-family: var(--font-mono); margin-top: 2px;">CLEARANCE: {role.upper()}</div>
                 </div>
                 """,
                 unsafe_allow_html=True

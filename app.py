@@ -48,7 +48,7 @@ from frontend.views.login import render_login_view
 
 
 def load_custom_css() -> None:
-    """Inject tactical military camouflage theme styles with translucent background."""
+    """Inject tactical military camouflage theme styles with subtle watermark and local offline fonts."""
     css_file = PROJECT_ROOT / "frontend" / "styles" / "theme.css"
     bg_file = PROJECT_ROOT / "frontend" / "assets" / "camo_bg.webp"
 
@@ -57,24 +57,8 @@ def load_custom_css() -> None:
         import base64
         b64_img = base64.b64encode(bg_file.read_bytes()).decode("utf-8")
         bg_css = f"""
-        .stApp {{
-            background: 
-                linear-gradient(rgba(18, 25, 20, 0.78), rgba(12, 17, 13, 0.85)),
-                url('data:image/webp;base64,{b64_img}') !important;
-            background-size: cover !important;
-            background-position: center center !important;
-            background-attachment: fixed !important;
-            background-repeat: no-repeat !important;
-        }}
-
-        section[data-testid="stSidebar"] {{
-            background: 
-                linear-gradient(rgba(17, 24, 19, 0.86), rgba(12, 17, 13, 0.92)),
-                url('data:image/webp;base64,{b64_img}') !important;
-            background-size: cover !important;
-            background-position: left center !important;
-            background-attachment: fixed !important;
-            border-right: 1px solid var(--border-tactical) !important;
+        :root {{
+            --nexus-camo-bg: url('data:image/webp;base64,{b64_img}');
         }}
         """
 

@@ -1,24 +1,68 @@
 /* ==============================================================================
-   NEXUS TACTICAL DESIGN SYSTEM
-   Visual Identity: Disciplined, Modern, Technical, Camouflage-Inspired
-   Color Tokens:
-     --olive-drab:        #556B2F
-     --army-green:        #4B5320
-     --deep-tactical:     #26382B
-     --forest-green:      #183B2B
-     --khaki:             #C3B091
-     --sand-beige:        #D6C6A5
-     --off-white:         #F4F2E9
-     --charcoal:          #202820
-     --charcoal-card:     #273227
-     --muted-gold:        #B49A5A
-     --border-tactical:   #3B4B3D
-     --danger-tactical:   #A84242
-     --warning-tactical:  #C48D3F
-     --success-tactical:  #4B7A47
+   NEXUS TACTICAL DESIGN SYSTEM — TYPOGRAPHY & THEME SPECIFICATION
+   Visual Identity: Disciplined, Modern, Technical, Military Intelligence Dashboard
+   Offline-Ready Fonts: Google Sans Flex, Google Sans Text, IBM Plex Mono
    ============================================================================== */
 
+/* Local Offline Font Registrations */
+@font-face {
+  font-family: 'Google Sans Flex';
+  src: url('/app/static/fonts/GoogleSansFlex-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans Text';
+  src: url('/app/static/fonts/GoogleSansText-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans Text';
+  src: url('/app/static/fonts/GoogleSansText-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans Text';
+  src: url('/app/static/fonts/GoogleSansText-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/app/static/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/app/static/fonts/IBMPlexMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/app/static/fonts/IBMPlexMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  /* Core Tactical Palette Tokens */
   --olive-drab: #556B2F;
   --army-green: #4B5320;
   --deep-tactical: #26382B;
@@ -34,38 +78,182 @@
   --danger-tactical: #9E3838;
   --warning-tactical: #B8860B;
   --success-tactical: #45784A;
-  --font-mono: "Consolas", "Courier New", monospace;
-  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+
+  /* Typography Font Families */
+  --font-display: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-body: 'Google Sans Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  --font-sans: var(--font-body);
+
+  /* Typography Hierarchy Scale */
+  --font-size-hero: 34px;
+  --font-size-section: 24px;
+  --font-size-card: 19px;
+  --font-size-body: 16px;
+  --font-size-nav: 15px;
+  --font-size-button: 15px;
+  --font-size-input: 16px;
+  --font-size-label: 13px;
+  --font-size-meta: 12.5px;
+  --font-size-badge: 12px;
+
+  --line-height-body: 1.6;
+  --line-height-heading: 1.25;
+
+  /* Surface & Glassmorphism Tokens */
+  --bg-base: #121814;
+  --glass-panel-bg: rgba(14, 22, 17, 0.78);
+  --glass-panel-border: 1px solid rgba(58, 74, 60, 0.55);
+  --glass-blur: blur(8px);
+  --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+
+  --sidebar-bg: rgba(16, 23, 18, 0.86);
+  --card-bg: rgba(22, 32, 25, 0.78);
+  --card-border: 1px solid rgba(58, 74, 60, 0.55);
+  --card-hover-border: rgba(195, 176, 145, 0.65);
 }
 
-/* Global Application Reset & Background */
+/* Base Application Reset & Solid Deep Background */
 .stApp {
-  background-color: var(--charcoal) !important;
+  background-color: var(--bg-base) !important;
   color: var(--off-white) !important;
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
+  position: relative !important;
+  min-height: 100vh;
 }
 
-/* Header & Top Bar Styling */
+/* Subtle Military Camouflage Watermark via ::before pseudo-element */
+.stApp::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: var(--nexus-camo-bg, url('/app/static/camo_bg.webp'));
+  background-size: 380px auto;
+  background-repeat: repeat;
+  background-position: center center;
+  opacity: 0.11;
+  filter: saturate(0.65) contrast(0.85);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure all foreground content renders above the subtle background watermark */
+.stApp > header,
+[data-testid="stAppViewContainer"],
+section[data-testid="stSidebar"],
+.main,
+.block-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Main Container Spacing */
+.block-container {
+  padding-top: 1.5rem !important;
+  padding-bottom: 3rem !important;
+  max-width: 1380px !important;
+}
+
+/* Typography Hierarchy for Headings */
+h1, .stHeadingContainer h1, [data-testid="stHeadingWithActionElements"] h1 {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-hero) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: var(--off-white) !important;
+  line-height: var(--line-height-heading) !important;
+  margin-bottom: 0.75rem !important;
+}
+
+h2, .stHeadingContainer h2, [data-testid="stHeadingWithActionElements"] h2 {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-section) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.015em !important;
+  color: var(--sand-beige) !important;
+  line-height: 1.3 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+h3, .stHeadingContainer h3, [data-testid="stHeadingWithActionElements"] h3 {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-card) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--off-white) !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-body) !important;
+  font-weight: 600 !important;
+  color: var(--sand-beige) !important;
+}
+
+p, span, div, li {
+  font-family: var(--font-body);
+}
+
+/* Sidebar Custom Styling with Glassmorphism */
+section[data-testid="stSidebar"] {
+  background-color: var(--sidebar-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-right: 1px solid var(--border-tactical) !important;
+}
+
+section[data-testid="stSidebar"] hr {
+  border-color: var(--border-subtle) !important;
+}
+
+section[data-testid="stSidebar"] div.stButton > button {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-nav) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  padding: 10px 14px !important;
+}
+
+/* Tactical Topbar Header */
 .nexus-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: rgba(24, 38, 28, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--glass-panel-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 2px solid var(--olive-drab);
   border-radius: 6px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--glass-shadow);
 }
 
+.nexus-topbar-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-card);
+  font-weight: 700;
+  color: var(--off-white);
+  letter-spacing: 0.05em;
+}
+
+/* Badges & Status Indicators */
 .nexus-badge {
   display: inline-block;
   padding: 3px 10px;
-  font-size: 0.75rem;
+  font-size: var(--font-size-badge);
   font-family: var(--font-mono);
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border-radius: 3px;
@@ -92,86 +280,81 @@
   color: #D6D6D6;
 }
 
-/* Sidebar Custom Styling */
-section[data-testid="stSidebar"] {
-  background-color: #1A221C !important;
-  border-right: 1px solid var(--border-tactical) !important;
-}
-
-section[data-testid="stSidebar"] hr {
-  border-color: var(--border-subtle) !important;
-}
-
-/* Metric / KPI Cards */
+/* Metric / KPI Stat Cards */
 .nexus-stat-card {
-  background-color: rgba(30, 42, 33, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-tactical);
+  background-color: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--card-border);
   border-left: 4px solid var(--olive-drab);
   border-radius: 6px;
   padding: 16px 18px;
   margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--glass-shadow);
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .nexus-stat-card:hover {
   transform: translateY(-2px);
-  border-color: var(--khaki);
+  border-color: var(--card-hover-border);
 }
 
 .nexus-stat-label {
-  font-size: 0.78rem;
+  font-size: var(--font-size-label);
   font-family: var(--font-mono);
   color: var(--sand-beige);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  font-weight: 600;
 }
 
 .nexus-stat-val {
-  font-size: 1.8rem;
+  font-size: 1.85rem;
   font-weight: 700;
   color: var(--off-white);
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
+  line-height: 1.15;
 }
 
 .nexus-stat-sub {
-  font-size: 0.75rem;
+  font-size: var(--font-size-meta);
+  font-family: var(--font-mono);
   color: var(--khaki);
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 /* Tactical Camouflage Banner Pattern */
 .nexus-camo-hero {
-  background: rgba(22, 32, 24, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--border-tactical);
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--card-border);
   border-radius: 8px;
-  padding: 24px;
+  padding: 22px 24px;
   margin-bottom: 20px;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--glass-shadow);
 }
 
 /* Citation & Grounding Cards */
 .nexus-citation-card {
-  background-color: rgba(26, 36, 28, 0.78);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-tactical);
+  background-color: var(--glass-panel-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-panel-border);
   border-left: 3px solid var(--muted-gold);
-  border-radius: 5px;
-  padding: 12px 14px;
+  border-radius: 6px;
+  padding: 14px 16px;
   margin-top: 10px;
-  font-size: 0.85rem;
+  font-size: var(--font-size-body);
+  box-shadow: var(--glass-shadow);
 }
 
 .nexus-citation-title {
   color: var(--sand-beige);
+  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -179,50 +362,101 @@ section[data-testid="stSidebar"] hr {
 
 .nexus-citation-passage {
   color: #DCD9CE;
-  font-family: var(--font-sans);
-  background-color: rgba(0, 0, 0, 0.25);
-  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  background-color: rgba(0, 0, 0, 0.35);
+  padding: 10px 12px;
   border-radius: 4px;
-  margin-top: 6px;
-  line-height: 1.45;
+  margin-top: 8px;
+  line-height: 1.55;
   border-left: 2px solid var(--olive-drab);
 }
 
 /* Document Item Cards in Repository */
 .nexus-doc-item {
-  background-color: rgba(30, 42, 33, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-tactical);
+  background-color: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--card-border);
   border-radius: 6px;
   padding: 14px 16px;
   margin-bottom: 10px;
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.15s ease;
 }
 
 .nexus-doc-item:hover {
   border-color: var(--olive-drab);
 }
 
-/* Streamlit Native Widget Overrides */
-div.stButton > button {
-  background-color: var(--deep-tactical) !important;
+/* Chat Messages Translucent Glass Containers & Typography */
+[data-testid="stChatMessage"],
+.stChatMessage {
+  background-color: var(--glass-panel-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-panel-border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--glass-shadow) !important;
+  padding: 16px 20px !important;
+  margin-bottom: 14px !important;
+}
+
+[data-testid="stChatMessage"] p,
+.stChatMessage p {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
   color: var(--off-white) !important;
-  border: 1px solid var(--olive-drab) !important;
-  font-family: var(--font-sans) !important;
-  font-weight: 600 !important;
+}
+
+[data-testid="stChatMessage"] code,
+.stChatMessage code,
+code {
+  font-family: var(--font-mono) !important;
+  font-size: var(--font-size-meta) !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(85, 107, 47, 0.3) !important;
   border-radius: 4px !important;
+  padding: 2px 6px !important;
+}
+
+pre {
+  font-family: var(--font-mono) !important;
+  font-size: var(--font-size-meta) !important;
+  background-color: rgba(12, 18, 14, 0.9) !important;
+  border: 1px solid var(--border-tactical) !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+}
+
+/* Streamlit Button Styling */
+div.stButton > button {
+  background-color: rgba(38, 56, 43, 0.85) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  color: var(--off-white) !important;
+  border: 1px solid var(--border-tactical) !important;
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-button) !important;
+  font-weight: 600 !important;
+  border-radius: 5px !important;
+  padding: 8px 16px !important;
   transition: all 0.2s ease !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 div.stButton > button:hover {
   background-color: var(--olive-drab) !important;
   color: #FFFFFF !important;
   border-color: var(--muted-gold) !important;
-  box-shadow: 0 2px 8px rgba(85, 107, 47, 0.4) !important;
+  box-shadow: 0 3px 12px rgba(85, 107, 47, 0.4) !important;
+  transform: translateY(-1px);
 }
 
 div.stButton > button:active {
   background-color: var(--forest-green) !important;
+  transform: translateY(0);
 }
 
 /* Primary Button Styling */
@@ -236,67 +470,142 @@ div.stButton > button[kind="primary"]:hover {
   background-color: var(--olive-drab) !important;
 }
 
-/* Input Fields */
-div[data-baseweb="input"] {
-  background-color: #1A221C !important;
-  border-color: var(--border-tactical) !important;
+/* Form Inputs, Selectboxes & Textareas */
+div[data-baseweb="input"],
+div[data-baseweb="textarea"],
+div[data-baseweb="select"] {
+  background-color: rgba(22, 31, 24, 0.88) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--border-tactical) !important;
+  border-radius: 5px !important;
   color: var(--off-white) !important;
 }
 
-div[data-baseweb="input"] input {
+div[data-baseweb="input"] input,
+div[data-baseweb="textarea"] textarea {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-input) !important;
   color: var(--off-white) !important;
+}
+
+div[data-baseweb="input"] input::placeholder,
+div[data-baseweb="textarea"] textarea::placeholder {
+  color: #8C9B8E !important;
+  font-family: var(--font-body) !important;
+}
+
+/* Labels and Helper Text */
+label,
+.stWidgetLabel p,
+[data-testid="stWidgetLabel"] {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-label) !important;
+  font-weight: 600 !important;
+  color: var(--sand-beige) !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Captions and Telemetry Metadata */
+.stCaption,
+[data-testid="stCaptionContainer"] p,
+small {
+  font-family: var(--font-mono) !important;
+  font-size: var(--font-size-meta) !important;
+  color: #A4B2A5 !important;
+}
+
+/* Tabs Navigation */
+button[data-baseweb="tab"] {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-button) !important;
+  font-weight: 600 !important;
+  color: var(--khaki) !important;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+  color: var(--off-white) !important;
+  border-bottom-color: var(--olive-drab) !important;
 }
 
 /* Empty State Containers */
 .nexus-empty-state {
   text-align: center;
   padding: 40px 20px;
-  border: 2px dashed var(--border-tactical);
+  border: 2px dashed rgba(58, 74, 60, 0.7);
   border-radius: 8px;
-  background-color: rgba(32, 40, 32, 0.4);
+  background-color: rgba(18, 27, 21, 0.65);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   margin: 20px 0;
 }
 
 .nexus-empty-title {
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-size: var(--font-size-card);
   font-weight: 600;
   color: var(--sand-beige);
   margin-top: 12px;
 }
 
 .nexus-empty-subtitle {
-  font-size: 0.88rem;
-  color: #9EA89F;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #BAC5B9;
   margin-top: 6px;
-  max-width: 480px;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Alert Boxes */
+/* Alert & Notice Boxes */
 .nexus-alert-info {
-  background-color: #1E2D24;
+  background-color: rgba(30, 45, 36, 0.85);
   border-left: 4px solid var(--olive-drab);
   padding: 12px 16px;
   border-radius: 4px;
   margin: 10px 0;
   color: #D6DEC8;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
 }
 
 .nexus-alert-warning {
-  background-color: #332B1C;
+  background-color: rgba(51, 43, 28, 0.85);
   border-left: 4px solid var(--warning-tactical);
   padding: 12px 16px;
   border-radius: 4px;
   margin: 10px 0;
   color: #EBD9B5;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
 }
 
 .nexus-alert-danger {
-  background-color: #331E1E;
+  background-color: rgba(51, 30, 30, 0.85);
   border-left: 4px solid var(--danger-tactical);
   padding: 12px 16px;
   border-radius: 4px;
   margin: 10px 0;
   color: #E6BDBD;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+/* Tables and DataFrames */
+[data-testid="stDataFrame"],
+table {
+  font-family: var(--font-mono) !important;
+  font-size: var(--font-size-meta) !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+/* Divider lines */
+hr {
+  border-color: var(--border-tactical) !important;
 }

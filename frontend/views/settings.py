@@ -69,7 +69,7 @@ def render_settings_view() -> None:
         st.subheader("Host Machine Diagnostics")
         st.markdown(
             f"""
-            <div style="background:#161D18; border:1px solid #303E32; padding:14px; border-radius:6px; font-family:Consolas,monospace; font-size:0.83rem; line-height:1.8;">
+            <div style="background:rgba(22, 29, 24, 0.85); border:1px solid #303E32; padding:16px; border-radius:6px; font-family:var(--font-mono); font-size:var(--font-size-meta); line-height:1.75; backdrop-filter:var(--glass-blur);">
                 <div>• <b>APPLICATION:</b> {settings.app_name} v{settings.app_version}</div>
                 <div>• <b>OPERATING SYSTEM:</b> {platform.platform()}</div>
                 <div>• <b>PYTHON INTERPRETER:</b> {sys.version.split()[0]} ({sys.executable})</div>

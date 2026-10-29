@@ -30,24 +30,24 @@ def render_citation_card(citation: Dict[str, Any], index: int = 1) -> None:
 
     score_pct = f"{score * 100:.1f}%" if isinstance(score, (int, float)) else str(score)
     approval_badge = (
-        '<span style="color:#A5D6A7; font-size:0.7rem; font-family:Consolas,monospace;">[VERIFIED]</span>'
+        '<span style="color:#A5D6A7; font-size:var(--font-size-meta); font-family:var(--font-mono); font-weight:600;">[VERIFIED]</span>'
         if approved else
-        '<span style="color:#F9E79F; font-size:0.7rem; font-family:Consolas,monospace;">[UNAPPROVED]</span>'
+        '<span style="color:#F9E79F; font-size:var(--font-size-meta); font-family:var(--font-mono); font-weight:600;">[UNAPPROVED]</span>'
     )
 
     st.markdown(
         f"""
         <div class="nexus-citation-card">
             <div class="nexus-citation-title">
-                <span style="color:#B49A5A; font-family:Consolas,monospace;">[{index}]</span>
-                <span style="color:#F4F2E9; font-weight:700;">{doc_title}</span>
-                <span style="color:#C3B091; font-size:0.8rem;">(Page {page})</span>
+                <span style="color:#B49A5A; font-family:var(--font-mono); font-weight:700;">[{index}]</span>
+                <span style="color:#F4F2E9; font-weight:700; font-family:var(--font-display);">{doc_title}</span>
+                <span style="color:#C3B091; font-size:14px; font-family:var(--font-body);">(Page {page})</span>
                 {approval_badge}
-                <span style="margin-left:auto; font-family:Consolas,monospace; font-size:0.75rem; color:#A5D6A7;">
+                <span style="margin-left:auto; font-family:var(--font-mono); font-size:var(--font-size-meta); color:#A5D6A7;">
                     RELEVANCE: {score_pct}
                 </span>
             </div>
-            <div style="font-size:0.75rem; color:#8C9B8E; margin-top:3px; font-family:Consolas,monospace;">
+            <div style="font-size:var(--font-size-meta); color:#8C9B8E; margin-top:4px; font-family:var(--font-mono);">
                 SOURCE: {filename} // DOMAIN: {domain}
             </div>
             <div class="nexus-citation-passage">

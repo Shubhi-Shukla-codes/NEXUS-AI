@@ -40,10 +40,10 @@ def render_document_card(
         <div class="nexus-doc-item">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <div style="font-weight: 700; font-size: 1.02rem; color: #F4F2E9; margin-bottom: 3px;">
+                    <div style="font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-card); color: #F4F2E9; margin-bottom: 4px;">
                         📄 {title}
                     </div>
-                    <div style="font-family: Consolas, monospace; font-size: 0.75rem; color: #BAC2B8;">
+                    <div style="font-family: var(--font-mono); font-size: var(--font-size-meta); color: #BAC2B8;">
                         FILE: {filename} &nbsp;|&nbsp; DOMAIN: <span style="color:#D6C6A5;">{domain}</span> &nbsp;|&nbsp; SIZE: {size_kb:.1f} KB &nbsp;|&nbsp; CHUNKS: {chunk_count}
                     </div>
                 </div>

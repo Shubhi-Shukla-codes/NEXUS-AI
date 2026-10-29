@@ -38,8 +38,8 @@ def get_nexus_logo_svg(size: str = "full", color: str = "#F4F2E9", accent: str =
                 <circle cx="20" cy="20" r="1.5" fill="{accent}"/>
             </svg>
             <div style="line-height: 1.1;">
-                <span style="font-family: 'Segoe UI', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.12em; color: {color};">NEXUS</span>
-                <div style="font-family: 'Consolas', monospace; font-size: 0.65rem; color: {accent}; letter-spacing: 0.14em; text-transform: uppercase;">INTELLIGENCE</div>
+                <span style="font-family: var(--font-display, 'Segoe UI', sans-serif); font-weight: 800; font-size: 1.25rem; letter-spacing: 0.12em; color: {color};">NEXUS</span>
+                <div style="font-family: var(--font-mono, 'Consolas', monospace); font-size: 0.65rem; color: {accent}; letter-spacing: 0.14em; text-transform: uppercase;">INTELLIGENCE</div>
             </div>
         </div>
         """
@@ -59,10 +59,10 @@ def get_nexus_logo_svg(size: str = "full", color: str = "#F4F2E9", accent: str =
             <line x1="34" y1="27" x2="40" y2="27" stroke="{accent}" stroke-width="1.8"/>
         </svg>
         <div>
-            <div style="font-family: 'Segoe UI', sans-serif; font-weight: 900; font-size: 1.7rem; letter-spacing: 0.15em; color: {color};">
+            <div style="font-family: var(--font-display, 'Segoe UI', sans-serif); font-weight: 900; font-size: 1.7rem; letter-spacing: 0.15em; color: {color};">
                 NE<span style="color: {accent};">X</span>US
             </div>
-            <div style="font-family: 'Consolas', monospace; font-size: 0.72rem; color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase;">
+            <div style="font-family: var(--font-mono, 'Consolas', monospace); font-size: 0.72rem; color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase;">
                 OFFLINE-FIRST KNOWLEDGE PLATFORM
             </div>
         </div>

@@ -13,7 +13,7 @@ def render_header(title: str, domain_label: str = "ALL DOMAINS", show_badges: bo
     topbar_html = (
         '<div class="nexus-topbar">'
         '<div style="display: flex; align-items: center;">'
-        f'<span style="font-family: \'Segoe UI\', sans-serif; font-size: 1.15rem; font-weight: 700; color: #F4F2E9; letter-spacing: 0.05em;">{title.upper()}</span>'
+        f'<span class="nexus-topbar-title">{title.upper()}</span>'
         '</div>'
         '</div>'
     )

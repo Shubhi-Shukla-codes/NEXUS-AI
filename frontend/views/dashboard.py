@@ -159,9 +159,9 @@ def render_dashboard_view() -> None:
         for name, key, icon in domain_labels:
             st.markdown(
                 f"""
-                <div style="background:#1B231D; border:1px solid #2F3D31; padding:8px 12px; border-radius:4px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; color:#F4F2E9;">{icon} {name}</span>
-                    <span class="nexus-badge" style="background:#26382B; font-size:0.7rem;">READY</span>
+                <div style="background:rgba(27, 35, 29, 0.82); border:1px solid #2F3D31; padding:10px 14px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; backdrop-filter:var(--glass-blur);">
+                    <span style="font-family:var(--font-body); font-size:var(--font-size-nav); color:#F4F2E9;">{icon} {name}</span>
+                    <span class="nexus-badge" style="background:#26382B; font-size:var(--font-size-meta);">READY</span>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -171,8 +171,8 @@ def render_dashboard_view() -> None:
         st.subheader("📡 System & Telemetry Health")
         st.markdown(
             f"""
-            <div style="background:#161D18; border:1px solid #303E32; padding:14px; border-radius:6px;">
-                <div style="font-family:Consolas,monospace; font-size:0.8rem; line-height:1.8; color:#BAC2B8;">
+            <div style="background:rgba(22, 29, 24, 0.85); border:1px solid #303E32; padding:16px; border-radius:6px; backdrop-filter:var(--glass-blur);">
+                <div style="font-family:var(--font-mono); font-size:var(--font-size-meta); line-height:1.75; color:#BAC2B8;">
                     <div>• <b>STORAGE INTEGRITY:</b> <span style="color:#A5D6A7;">{disk_label}</span></div>
                     <div>• <b>DATABASE MODE:</b> <span style="color:#A5D6A7;">SQLite3 WAL (Local)</span></div>
                     <div>• <b>VECTOR ENGINE:</b> <span style="color:#A5D6A7;">ChromaDB (Local Directory)</span></div>

@@ -30,11 +30,11 @@ def render_login_view() -> None:
         
         st.markdown(
             """
-            <div style="background: rgba(22, 32, 25, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid #3A4A3C; border-radius: 8px; padding: 22px 26px; margin-top: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
-                <div style="font-family: Consolas, monospace; font-size: 0.72rem; color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase;">
+            <div style="background: rgba(22, 32, 25, 0.82); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid #3A4A3C; border-radius: 8px; padding: 22px 26px; margin-top: 16px; box-shadow: var(--glass-shadow);">
+                <div style="font-family: var(--font-mono); font-size: var(--font-size-label); color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;">
                     SECURE AIR-GAPPED GATEWAY // ROLE ENFORCED
                 </div>
-                <div style="font-size: 1.15rem; font-weight: 700; color: #F4F2E9; margin: 4px 0 12px 0;">
+                <div style="font-family: var(--font-display); font-size: var(--font-size-card); font-weight: 700; color: #F4F2E9; margin: 6px 0 14px 0;">
                     Authenticate Terminal Session
                 </div>
             """,
@@ -118,7 +118,7 @@ def render_login_view() -> None:
 
         st.markdown(
             """
-            <div style="text-align: center; margin-top: 14px; font-size: 0.72rem; color: #8A988B; font-family: Consolas, monospace;">
+            <div style="text-align: center; margin-top: 14px; font-size: var(--font-size-meta); color: #8A988B; font-family: var(--font-mono); letter-spacing: 0.08em;">
                 OFFLINE-FIRST // 100% LOCAL ENCLAVE // ZERO TELEMETRY
             </div>
             """,

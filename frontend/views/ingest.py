@@ -111,10 +111,10 @@ def render_ingest_view() -> None:
                         status_badge = "status-active" if pipeline_res['status'] == "approved" else "status-pending"
                         st.markdown(
                             f"""
-                            <div style="background:#1B241D; border-left:4px solid #556B2F; padding:8px 12px; margin-bottom:6px; border-radius:3px;">
+                            <div style="background:rgba(27, 36, 29, 0.82); border-left:4px solid #556B2F; padding:10px 14px; margin-bottom:8px; border-radius:4px; backdrop-filter:var(--glass-blur);">
                                 ✅ <b>{file.name}</b> ({result['file_size']/1024:.1f} KB) &nbsp;—&nbsp;
                                 <span class="nexus-badge {status_badge}">{pipeline_res['status'].upper()}</span>
-                                <span style="font-family:Consolas,monospace; font-size:0.75rem; color:#A4B0A3; margin-left:8px;">
+                                <span style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#A4B0A3; margin-left:8px;">
                                     PAGES: {pipeline_res['pages_count']} | CHUNKS: {pipeline_res['chunks_count']}
                                 </span>
                             </div>

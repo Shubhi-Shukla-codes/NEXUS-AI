@@ -24,11 +24,11 @@ def render_analytics_view() -> None:
 
     st.markdown(
         """
-        <div style="background-color: #19231B; border: 1px solid #303E32; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px;">
-            <span style="font-family: Consolas, monospace; font-size: 0.78rem; color: #D6C6A5; text-transform: uppercase;">
+        <div style="background-color: rgba(25, 35, 27, 0.82); border: 1px solid #303E32; border-radius: 6px; padding: 14px 18px; margin-bottom: 16px; backdrop-filter: var(--glass-blur);">
+            <span style="font-family: var(--font-mono); font-size: var(--font-size-label); color: #D6C6A5; text-transform: uppercase; font-weight: 600; letter-spacing: 0.06em;">
                 EMPIRICAL TELEMETRY MONITOR // ZERO FABRICATION POLICY
             </span>
-            <div style="font-size: 0.84rem; color: #BAC2B8; margin-top: 4px;">
+            <div style="font-family: var(--font-body); font-size: 14.5px; color: #BAC2B8; margin-top: 5px; line-height: 1.5;">
                 All metrics reflect actual database transactions, measured hardware latencies, and real evaluation runs.
             </div>
         </div>
