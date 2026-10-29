@@ -30,7 +30,7 @@ def render_login_view() -> None:
         
         st.markdown(
             """
-            <div style="background: linear-gradient(180deg, #1A241C 0%, #151D17 100%); border: 1px solid #3A4A3C; border-radius: 8px; padding: 22px 26px; margin-top: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+            <div style="background: rgba(22, 32, 25, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid #3A4A3C; border-radius: 8px; padding: 22px 26px; margin-top: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
                 <div style="font-family: Consolas, monospace; font-size: 0.72rem; color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase;">
                     SECURE AIR-GAPPED GATEWAY // ROLE ENFORCED
                 </div>
