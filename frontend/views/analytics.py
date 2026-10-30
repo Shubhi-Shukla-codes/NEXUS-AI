@@ -185,6 +185,14 @@ def render_analytics_view() -> None:
             return f"{diff:.3f}"
         return "Parity (0.000)"
 
+    def _safe_percent(val, default: float = 1.0) -> float:
+        if val is None:
+            return default * 100.0
+        try:
+            return float(val) * 100.0
+        except (ValueError, TypeError):
+            return default * 100.0
+
     table_data = [
         {
             "Metric": "Precision@4",
@@ -220,19 +228,85 @@ def render_analytics_view() -> None:
     st.table(table_data)
 
     # 3. Grounded Generation & Safety Metrics
+    st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
     col_gen_a, col_gen_b = st.columns(2)
     with col_gen_a:
-        st.markdown(f"#### {icon_html('circle_check', 'Generation Faithfulness & Provenance', size=16, color=ICON_COLOR_GOLD)}", unsafe_allow_html=True)
-        st.write(f"- **Factual Keyword Coverage**: `{gen.get('factual_keyword_coverage', 1.0) * 100:.1f}%`")
-        st.write(f"- **Citation Integrity**: `{gen.get('citation_validity_rate', 1.0) * 100:.1f}%` verified tags")
-        st.write(f"- **Evaluated Benchmark Trials**: `{report.get('total_cases_evaluated', 0)}` queries")
-        st.write(f"- **Execution Time**: `{report.get('elapsed_seconds', 0.0)}s`")
+        gen_ico = get_icon_svg("circle_check", size=18, color=ICON_COLOR_GOLD)
+        kw_cov = _safe_percent(gen.get("factual_keyword_coverage", 1.0))
+        cite_val = _safe_percent(gen.get("citation_validity_rate", 1.0))
+        eval_cases = report.get("total_cases_evaluated", 0) or 0
+        elapsed_sec = report.get("elapsed_seconds", 0.0) or 0.0
+
+        st.markdown(
+            f"""
+            <div class="nexus-stat-card" style="padding: 18px 20px; height: 100%; margin-bottom: 0px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid #303E32; padding-bottom: 10px;">
+                    {gen_ico}
+                    <span style="font-family: var(--font-display); font-size: var(--font-size-card); font-weight: 700; color: #F4F2E9; letter-spacing: 0.02em;">
+                        Generation Faithfulness &amp; Provenance
+                    </span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; font-family: var(--font-body); font-size: var(--font-size-body); color: #BAC2B8;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Factual Keyword Coverage</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #A5D6A7; font-size: 1.05rem;">{kw_cov:.1f}%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Citation Integrity</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #A5D6A7; font-size: 1.05rem;">{cite_val:.1f}% verified tags</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Evaluated Benchmark Trials</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #D6C6A5;">{eval_cases} queries</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Execution Time</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #F9E79F;">{elapsed_sec}s</span>
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     with col_gen_b:
-        st.markdown(f"#### {icon_html('shield', 'Out-of-Domain Abstention Guardrail', size=16, color=ICON_COLOR_GOLD)}", unsafe_allow_html=True)
-        st.write(f"- **Abstention Accuracy**: `{gen.get('abstention_accuracy', 1.0) * 100:.1f}%`")
-        st.write(f"- **Abstention Precision**: `{gen.get('abstention_precision', 1.0) * 100:.1f}%`")
-        st.write(f"- **Abstention Recall**: `{gen.get('abstention_recall', 1.0) * 100:.1f}%`")
-        st.write(f"- **Safety Cases**: `{report.get('abstention_cases', 0)}` non-authorized queries evaluated")
+        guard_ico = get_icon_svg("shield", size=18, color=ICON_COLOR_GOLD)
+        abst_acc = _safe_percent(gen.get("abstention_accuracy", 1.0))
+        abst_prec = _safe_percent(gen.get("abstention_precision", 1.0))
+        abst_rec = _safe_percent(gen.get("abstention_recall", 1.0))
+        abst_cases = report.get("abstention_cases", 0) or 0
+
+        st.markdown(
+            f"""
+            <div class="nexus-stat-card" style="padding: 18px 20px; height: 100%; margin-bottom: 0px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid #303E32; padding-bottom: 10px;">
+                    {guard_ico}
+                    <span style="font-family: var(--font-display); font-size: var(--font-size-card); font-weight: 700; color: #F4F2E9; letter-spacing: 0.02em;">
+                        Out-of-Domain Abstention Guardrail
+                    </span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; font-family: var(--font-body); font-size: var(--font-size-body); color: #BAC2B8;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Abstention Accuracy</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #A5D6A7; font-size: 1.05rem;">{abst_acc:.1f}%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Abstention Precision</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #A5D6A7; font-size: 1.05rem;">{abst_prec:.1f}%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Abstention Recall</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #A5D6A7; font-size: 1.05rem;">{abst_rec:.1f}%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Safety Cases</span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: #D6C6A5;">{abst_cases} non-authorized queries</span>
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # 4. Detailed Benchmark Test Case Explorer
     st.markdown("<hr style='margin: 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)

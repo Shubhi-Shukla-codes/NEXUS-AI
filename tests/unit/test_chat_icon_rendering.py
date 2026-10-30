@@ -104,6 +104,43 @@ class TestChatIconRendering(unittest.TestCase):
         self.assertNotIn("<Rev", esc_title)
         self.assertIn("&lt;Rev", esc_title)
 
+    def test_no_markdown_atx_headings_with_inline_icons(self):
+        """
+        Regression test for System Analytics & Views:
+        Verify that no view file embeds SVG helpers or raw SVG into Markdown ATX headings (# to ######).
+        Markdown heading parsers fail on inline SVGs, causing raw markup to be displayed as text.
+        """
+        import glob
+        pattern = re.compile(r'^\s*#+\s*.*(?:icon_html|get_icon_svg|<svg)', re.MULTILINE)
+        view_files = glob.glob("frontend/views/*.py") + glob.glob("frontend/components/*.py")
+        self.assertTrue(len(view_files) > 0, "No view files discovered for scan")
+
+        for fpath in view_files:
+            with open(fpath, "r", encoding="utf-8") as f:
+                content = f.read()
+            matches = pattern.findall(content)
+            self.assertEqual(
+                matches,
+                [],
+                f"File '{fpath}' contains inline SVG or icon helpers inside Markdown headings: {matches}"
+            )
+
+    def test_analytics_cards_clean_html_rendering(self):
+        """
+        Verify that System Analytics stat cards render cleanly as HTML blocks
+        without .strip() artifacts or unescaped http URLs.
+        """
+        from frontend.components.icons import get_icon_svg
+        gen_ico = get_icon_svg("circle_check", size=18, color="#D6C6A5")
+        guard_ico = get_icon_svg("shield", size=18, color="#D6C6A5")
+
+        for ico in [gen_ico, guard_ico]:
+            self.assertIn("<svg", ico)
+            self.assertIn("</svg>", ico)
+            self.assertNotIn(".strip()", ico)
+            self.assertNotIn("http://", ico)
+            self.assertNotIn("https://", ico)
+
 
 if __name__ == "__main__":
     unittest.main()
