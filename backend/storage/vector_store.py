@@ -43,6 +43,18 @@ class ChromaVectorStore:
             )
         return self._collection
 
+    def reset_collection(self) -> None:
+        """Drop and recreate the collection cleanly to clear desynced segments or queue states."""
+        col = self._get_collection()
+        try:
+            self._client.delete_collection(name=COLLECTION_NAME)
+        except Exception:
+            pass
+        self._collection = self._client.get_or_create_collection(
+            name=COLLECTION_NAME,
+            metadata={"hnsw:space": "cosine"}
+        )
+
     def index_chunks(
         self,
         chunks: List[Dict[str, Any]],
@@ -111,11 +123,12 @@ class ChromaVectorStore:
         query_embedding: List[float],
         top_k: int = 4,
         domain: Optional[str] = None,
-        approved_only: bool = True
+        approved_only: bool = True,
+        document_id: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
         Search vector collection using cosine similarity.
-        Applies domain and approval state metadata filters.
+        Applies domain, approval state, and optional document ID metadata filters.
         """
         collection = self._get_collection()
 
@@ -128,18 +141,26 @@ class ChromaVectorStore:
         if domain and domain != "all":
             conditions.append({"domain": domain.lower()})
 
+        if document_id is not None:
+            conditions.append({"document_id": int(document_id)})
+
         if len(conditions) == 1:
             where_filter = conditions[0]
         elif len(conditions) > 1:
             where_filter = {"$and": conditions}
 
-        # Execute query
-        results = collection.query(
-            query_embeddings=[query_embedding],
-            n_results=top_k,
-            where=where_filter if where_filter else None,
-            include=["documents", "metadatas", "distances"]
-        )
+        # Execute query with safety fallback against corrupted index plans
+        try:
+            results = collection.query(
+                query_embeddings=[query_embedding],
+                n_results=top_k,
+                where=where_filter if where_filter else None,
+                include=["documents", "metadatas", "distances"]
+            )
+        except Exception as q_err:
+            import logging
+            logging.getLogger("nexus.vector_store").error("ChromaDB query execution error: %s", q_err)
+            return []
 
         matches: List[Dict[str, Any]] = []
         if not results or not results.get("ids") or not results["ids"][0]:
@@ -237,8 +258,8 @@ def index_document_in_vector_store(
         document_metadata=doc_meta
     )
 
-    # Update document status to 'indexed' if approved
-    if doc_meta["status"] == "approved":
+    # Update document status to 'indexed' upon successful vector persistence
+    if doc_meta["status"] in ("approved", "processed", "indexed"):
         with get_db_connection(custom_path) as conn:
             conn.execute(
                 "UPDATE documents SET status = 'indexed' WHERE id = ?",
@@ -261,5 +282,5 @@ def index_document_in_vector_store(
         "document_id": document_id,
         "indexed_chunks": indexed_count,
         "model_name": embedder.model_name,
-        "status": "indexed" if doc_meta["status"] == "approved" else doc_meta["status"]
+        "status": "indexed" if doc_meta["status"] in ("approved", "processed", "indexed") else doc_meta["status"]
     }

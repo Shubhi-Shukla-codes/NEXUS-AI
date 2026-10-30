@@ -9,6 +9,15 @@ import platform
 import streamlit as st
 from backend.config import settings
 from frontend.components.header import render_header
+from frontend.components.icons import (
+    get_icon_svg,
+    icon_html,
+    ICON_COLOR_GOLD,
+    ICON_COLOR_MUTED_GOLD,
+    ICON_COLOR_SUCCESS,
+    ICON_COLOR_WARNING,
+    ICON_COLOR_SUBTLE
+)
 
 
 def render_settings_view() -> None:
@@ -17,14 +26,15 @@ def render_settings_view() -> None:
     render_header("SYSTEM CONFIGURATION & SECURITY", domain_label=domain_filter)
 
     tab_models, tab_storage, tab_privacy, tab_sysinfo = st.tabs([
-        "🧠 Local AI Runtime",
-        "💾 Storage & Paths",
-        "🛡️ Privacy & Security",
-        "💻 System Diagnostics"
+        "Local AI Runtime",
+        "Storage & Paths",
+        "Privacy & Security",
+        "System Diagnostics"
     ])
 
     with tab_models:
-        st.subheader("Local Inference Engine Configuration")
+        hdr_llm = icon_html("cpu", "Local Inference Engine Configuration", size=20, color=ICON_COLOR_GOLD, gap=8)
+        st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin:6px 0 12px 0;'>{hdr_llm}</div>", unsafe_allow_html=True)
         c_m1, c_m2 = st.columns(2)
         with c_m1:
             st.text_input("Ollama Base URL", value=settings.models.ollama_base_url, disabled=True)
@@ -35,7 +45,8 @@ def render_settings_view() -> None:
             st.slider("Max Context Output Tokens", min_value=256, max_value=4096, value=settings.models.llm_max_tokens, step=256)
 
         st.markdown("<hr style='margin:12px 0; border-color:#3A4A3C;'/>", unsafe_allow_html=True)
-        st.subheader("Embedding Configuration")
+        hdr_emb = icon_html("database", "Embedding Configuration", size=20, color=ICON_COLOR_GOLD, gap=8)
+        st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin:6px 0 12px 0;'>{hdr_emb}</div>", unsafe_allow_html=True)
         c_e1, c_e2 = st.columns(2)
         with c_e1:
             st.text_input("Embedding Model", value=settings.models.embedding_model_name, disabled=True)
@@ -43,14 +54,16 @@ def render_settings_view() -> None:
             st.text_input("Vector Dimensionality", value=f"{settings.models.embedding_dimension} dimensions", disabled=True)
 
     with tab_storage:
-        st.subheader("Local Filesystem & Vault Paths")
+        hdr_stor = icon_html("files", "Local Filesystem & Vault Paths", size=20, color=ICON_COLOR_GOLD, gap=8)
+        st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin:6px 0 12px 0;'>{hdr_stor}</div>", unsafe_allow_html=True)
         st.text_input("Database Directory", value=str(settings.paths.db_dir), disabled=True)
         st.text_input("Vector Store Directory", value=str(settings.paths.vector_store_dir), disabled=True)
         st.text_input("Document Vault (SHA-256 Storage)", value=str(settings.paths.vault_dir), disabled=True)
         st.text_input("Evaluation Benchmark Directory", value=str(settings.paths.eval_dir), disabled=True)
 
     with tab_privacy:
-        st.subheader("Air-Gap & Privacy Policies")
+        hdr_priv = icon_html("shield", "Air-Gap & Privacy Policies", size=20, color=ICON_COLOR_GOLD, gap=8)
+        st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin:6px 0 12px 0;'>{hdr_priv}</div>", unsafe_allow_html=True)
         st.markdown(
             """
             <div class="nexus-alert-info">
@@ -66,7 +79,8 @@ def render_settings_view() -> None:
         st.checkbox("Strip Document Metadata PII During Ingestion", value=True)
 
     with tab_sysinfo:
-        st.subheader("Host Machine Diagnostics")
+        hdr_diag = icon_html("telemetry", "Host Machine Diagnostics", size=20, color=ICON_COLOR_GOLD, gap=8)
+        st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin:6px 0 12px 0;'>{hdr_diag}</div>", unsafe_allow_html=True)
         st.markdown(
             f"""
             <div style="background:rgba(22, 29, 24, 0.85); border:1px solid #303E32; padding:16px; border-radius:6px; font-family:var(--font-mono); font-size:var(--font-size-meta); line-height:1.75; backdrop-filter:var(--glass-blur);">

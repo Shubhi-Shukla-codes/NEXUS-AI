@@ -8,6 +8,15 @@ import streamlit as st
 import time
 from backend.config import settings
 from frontend.components.header import render_header
+from frontend.components.icons import (
+    get_icon_svg,
+    icon_html,
+    ICON_COLOR_GOLD,
+    ICON_COLOR_MUTED_GOLD,
+    ICON_COLOR_SUCCESS,
+    ICON_COLOR_WARNING,
+    ICON_COLOR_SUBTLE
+)
 from backend.evaluation.runner import run_benchmark_evaluation, get_latest_evaluation_report
 from backend.evaluation.seed_dataset import seed_demonstration_dataset
 from backend.evaluation.benchmark_dataset import get_benchmark_cases
@@ -39,7 +48,7 @@ def render_analytics_view() -> None:
     # Benchmark Control Bar
     col_seed, col_run, col_info = st.columns([1.5, 1.8, 1.7])
     with col_seed:
-        if st.button("🌱 Seed Domain Corpus (6 Docs)", use_container_width=True):
+        if st.button("Seed Domain Corpus (6 Docs)", use_container_width=True):
             with st.spinner("Ingesting and indexing 6 institutional domain documents..."):
                 res = seed_demonstration_dataset(user_id=user_id)
                 st.success(f"Seeded {res['seeded_count']} documents ({res['total_chunks']} chunks).")
@@ -47,7 +56,7 @@ def render_analytics_view() -> None:
                 st.rerun()
 
     with col_run:
-        if st.button("⚡ Run Benchmark Suite (30 Cases)", use_container_width=True):
+        if st.button("Run Benchmark Suite (30 Cases)", use_container_width=True):
             with st.spinner("Executing quantitative IR benchmark (Dense vs Hybrid + Faithfulness)..."):
                 rep = run_benchmark_evaluation(
                     user_id=user_id,
@@ -61,7 +70,13 @@ def render_analytics_view() -> None:
 
     with col_info:
         cases = get_benchmark_cases()
-        st.caption(f"Benchmark Suite: `{len(cases)} Test Cases` (22 Factual + 8 Abstention Cases)")
+        info_ico = get_icon_svg("info", size=15, color=ICON_COLOR_GOLD)
+        st.markdown(
+            f"<div style='font-size:var(--font-size-meta); color:#BAC2B8; display:flex; align-items:center; gap:6px; margin-top:8px;'>"
+            f"{info_ico} <span>Benchmark Suite: <code>{len(cases)} Test Cases</code> (22 Factual + 8 Abstention)</span>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
 
     st.markdown("<hr style='margin: 12px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
@@ -69,10 +84,11 @@ def render_analytics_view() -> None:
     report = get_latest_evaluation_report()
 
     if not report:
+        chart_ico = get_icon_svg("chart", size=44, color=ICON_COLOR_MUTED_GOLD)
         st.markdown(
-            """
+            f"""
             <div class="nexus-empty-state">
-                <div style="font-size: 2.2rem;">📊</div>
+                <div style="margin-bottom: 12px;">{chart_ico}</div>
                 <div class="nexus-empty-title">No Evaluation Benchmark Run Logged Yet</div>
                 <div class="nexus-empty-subtitle">
                     Click <b>'Seed Domain Corpus'</b> followed by <b>'Run Benchmark Suite'</b> above
@@ -92,10 +108,14 @@ def render_analytics_view() -> None:
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
+        ico_c1 = get_icon_svg("chart", size=20, color=ICON_COLOR_SUCCESS)
         st.markdown(
             f"""
             <div class="nexus-stat-card">
-                <div class="nexus-stat-label">HYBRID nDCG@4</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div class="nexus-stat-label">HYBRID nDCG@4</div>
+                    {ico_c1}
+                </div>
                 <div class="nexus-stat-val" style="color:#A5D6A7;">{hybrid.get('ndcg_at_k', 0.0):.3f}</div>
                 <div class="nexus-stat-sub">Dense Baseline: {dense.get('ndcg_at_k', 0.0):.3f}</div>
             </div>
@@ -103,10 +123,14 @@ def render_analytics_view() -> None:
             unsafe_allow_html=True
         )
     with c2:
+        ico_c2 = get_icon_svg("layers", size=20, color=ICON_COLOR_SUCCESS)
         st.markdown(
             f"""
             <div class="nexus-stat-card">
-                <div class="nexus-stat-label">MEAN RECIPROCAL RANK (MRR)</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div class="nexus-stat-label">MEAN RECIPROCAL RANK (MRR)</div>
+                    {ico_c2}
+                </div>
                 <div class="nexus-stat-val" style="color:#A5D6A7;">{hybrid.get('mrr', 0.0):.3f}</div>
                 <div class="nexus-stat-sub">Dense Baseline: {dense.get('mrr', 0.0):.3f}</div>
             </div>
@@ -114,11 +138,15 @@ def render_analytics_view() -> None:
             unsafe_allow_html=True
         )
     with c3:
+        ico_c3 = get_icon_svg("shield_check", size=20, color=ICON_COLOR_GOLD)
         abst_acc = gen.get("abstention_accuracy", 1.0) * 100.0
         st.markdown(
             f"""
             <div class="nexus-stat-card">
-                <div class="nexus-stat-label">ABSTENTION ACCURACY</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div class="nexus-stat-label">ABSTENTION ACCURACY</div>
+                    {ico_c3}
+                </div>
                 <div class="nexus-stat-val" style="color:#D6C6A5;">{abst_acc:.1f}%</div>
                 <div class="nexus-stat-sub">Out-of-Domain Guardrail</div>
             </div>
@@ -126,11 +154,15 @@ def render_analytics_view() -> None:
             unsafe_allow_html=True
         )
     with c4:
+        ico_c4 = get_icon_svg("circle_check", size=20, color=ICON_COLOR_SUCCESS)
         cite_val = gen.get("citation_validity_rate", 1.0) * 100.0
         st.markdown(
             f"""
             <div class="nexus-stat-card">
-                <div class="nexus-stat-label">CITATION VALIDITY RATE</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div class="nexus-stat-label">CITATION VALIDITY RATE</div>
+                    {ico_c4}
+                </div>
                 <div class="nexus-stat-val" style="color:#A5D6A7;">{cite_val:.1f}%</div>
                 <div class="nexus-stat-sub">Verified Grounded Reference Tags</div>
             </div>
@@ -141,16 +173,17 @@ def render_analytics_view() -> None:
     st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
 
     # 2. Retrieval Comparison Table (Dense vs Hybrid)
-    st.subheader("Quantitative Information Retrieval Comparison")
+    tbl_hdr = icon_html("chart", "Quantitative Information Retrieval Comparison", size=20, color=ICON_COLOR_GOLD, gap=8)
+    st.markdown(f"<div style='font-family:var(--font-display); font-size:var(--font-size-section); font-weight:700; color:#F4F2E9; margin-bottom:4px;'>{tbl_hdr}</div>", unsafe_allow_html=True)
     st.caption(f"Macro-averaged across {dense.get('evaluated_cases', 0)} factual benchmark test cases (Top-K = {report.get('top_k', 4)}):")
 
     def calc_delta(h_val: float, d_val: float) -> str:
         diff = h_val - d_val
         if diff > 0.0001:
-            return f"🟢 +{diff:.3f} (+{(diff / (d_val or 1.0)) * 100:.1f}%)"
+            return f"+{diff:.3f} (+{(diff / (d_val or 1.0)) * 100:.1f}%)"
         elif diff < -0.0001:
-            return f"🔴 {diff:.3f}"
-        return "⚪ Parity (0.000)"
+            return f"{diff:.3f}"
+        return "Parity (0.000)"
 
     table_data = [
         {
@@ -189,13 +222,13 @@ def render_analytics_view() -> None:
     # 3. Grounded Generation & Safety Metrics
     col_gen_a, col_gen_b = st.columns(2)
     with col_gen_a:
-        st.markdown("#### Generation Faithfulness & Provenance")
+        st.markdown(f"#### {icon_html('circle_check', 'Generation Faithfulness & Provenance', size=16, color=ICON_COLOR_GOLD)}", unsafe_allow_html=True)
         st.write(f"- **Factual Keyword Coverage**: `{gen.get('factual_keyword_coverage', 1.0) * 100:.1f}%`")
         st.write(f"- **Citation Integrity**: `{gen.get('citation_validity_rate', 1.0) * 100:.1f}%` verified tags")
         st.write(f"- **Evaluated Benchmark Trials**: `{report.get('total_cases_evaluated', 0)}` queries")
         st.write(f"- **Execution Time**: `{report.get('elapsed_seconds', 0.0)}s`")
     with col_gen_b:
-        st.markdown("#### Out-of-Domain Abstention Guardrail")
+        st.markdown(f"#### {icon_html('shield', 'Out-of-Domain Abstention Guardrail', size=16, color=ICON_COLOR_GOLD)}", unsafe_allow_html=True)
         st.write(f"- **Abstention Accuracy**: `{gen.get('abstention_accuracy', 1.0) * 100:.1f}%`")
         st.write(f"- **Abstention Precision**: `{gen.get('abstention_precision', 1.0) * 100:.1f}%`")
         st.write(f"- **Abstention Recall**: `{gen.get('abstention_recall', 1.0) * 100:.1f}%`")
@@ -203,14 +236,16 @@ def render_analytics_view() -> None:
 
     # 4. Detailed Benchmark Test Case Explorer
     st.markdown("<hr style='margin: 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
-    with st.expander("🔍 View Individual Benchmark Case Results", expanded=False):
+    with st.expander("View Individual Benchmark Case Results", expanded=False):
         details = report.get("case_details", [])
         for item in details:
-            status_badge = "🛡️ ABSTAINED" if item.get("abstained") else "✅ ANSWERED"
+            status_badge = "[ABSTAINED]" if item.get("abstained") else "[ANSWERED]"
+            badge_color = "#D6C6A5" if item.get("abstained") else "#A5D6A7"
             exp_doc = item.get("expected_document") or "NONE (Out of Domain)"
             st.markdown(
-                f"**`{item['id']}`** [{status_badge}] **{item['query']}**  \n"
-                f"*Domain*: `{item['domain'].upper()}` | *Difficulty*: `{item['difficulty']}` | *Expected*: `{exp_doc}`"
+                f"**`{item['id']}`** <span style='color:{badge_color}; font-family:var(--font-mono); font-weight:700;'>{status_badge}</span> **{item['query']}**  \n"
+                f"*Domain*: `{item['domain'].upper()}` | *Difficulty*: `{item['difficulty']}` | *Expected*: `{exp_doc}`",
+                unsafe_allow_html=True
             )
             c_d, c_h = st.columns(2)
             with c_d:

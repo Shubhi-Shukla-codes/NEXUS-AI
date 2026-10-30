@@ -17,6 +17,17 @@ from backend.services.document_service import (
 )
 from frontend.components.header import render_header
 from frontend.components.document_card import render_document_card
+from frontend.components.icons import (
+    get_icon_svg,
+    icon_html,
+    domain_icon,
+    ICON_COLOR_GOLD,
+    ICON_COLOR_MUTED_GOLD,
+    ICON_COLOR_SUCCESS,
+    ICON_COLOR_WARNING,
+    ICON_COLOR_SUBTLE,
+    ICON_COLOR_OFFWHITE
+)
 
 
 def get_document_page_texts(doc_id: int) -> dict:
@@ -57,7 +68,7 @@ def render_repository_view() -> None:
     # Search and Filter Toolbar
     c_search, c_domain, c_status = st.columns([2.5, 1.5, 1.2])
     with c_search:
-        search_query = st.text_input("🔍 Search Document Metadata or Filename", placeholder="e.g. state, manual, directory...")
+        search_query = st.text_input("Search Document Metadata or Filename", placeholder="e.g. state, manual, directory...")
     with c_domain:
         domain_options = ["all"] + list(settings.domains)
         selected_dom_idx = 0
@@ -89,7 +100,7 @@ def render_repository_view() -> None:
             user_id=user_id
         )
     except Exception as e:
-        st.error(f"⚠️ Error querying repository: {e}")
+        st.error(f"Error querying repository: {e}")
         filtered_docs = []
 
     # Quick interactive document selector if documents exist
@@ -105,7 +116,8 @@ def render_repository_view() -> None:
 
         col_sel_label, col_sel_box = st.columns([1.2, 3.8])
         with col_sel_label:
-            st.markdown("<div style='margin-top:6px; font-weight:700; color:#D6C6A5;'>📖 Inspect Document:</div>", unsafe_allow_html=True)
+            insp_hdr = icon_html("preview", "Inspect Document:", size=16, color=ICON_COLOR_GOLD, gap=6)
+            st.markdown(f"<div style='margin-top:6px; font-weight:700; color:#D6C6A5;'>{insp_hdr}</div>", unsafe_allow_html=True)
         with col_sel_box:
             chosen_doc_id = st.selectbox(
                 "Select Document to Read / Inspect",
@@ -124,12 +136,15 @@ def render_repository_view() -> None:
         doc_details = get_document_by_id(preview_id, user_id=user_id)
         if doc_details:
             with st.container():
+                doc_title_ico = get_icon_svg("file_text", size=20, color=ICON_COLOR_GOLD)
                 st.markdown(
                     f"""
                     <div style="background:#18221A; border:1px solid #4B644D; border-radius:6px; padding:18px 20px; margin-bottom:20px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <span style="font-family:var(--font-display); font-size:var(--font-size-card); font-weight:700; color:#F4F2E9;">📄 {doc_details['title']}</span>
+                                <span style="font-family:var(--font-display); font-size:var(--font-size-card); font-weight:700; color:#F4F2E9; display:inline-flex; align-items:center; gap:8px;">
+                                    {doc_title_ico} <span>{doc_details['title']}</span>
+                                </span>
                                 <span class="nexus-badge status-active" style="margin-left:10px;">{doc_details['status'].upper()}</span>
                                 <span class="nexus-badge" style="margin-left:6px; background:#2A382C;">{doc_details['domain'].upper()}</span>
                             </div>
@@ -142,22 +157,22 @@ def render_repository_view() -> None:
                 # Action bar for selected document
                 c_chat_btn, c_close_btn = st.columns([2.5, 1.2])
                 with c_chat_btn:
-                    if st.button(f"💬 Query '{doc_details['title'][:35]}...' in Knowledge Workspace", key="btn_chat_with_doc", type="primary"):
+                    if st.button(f"Query '{doc_details['title'][:35]}...' in Knowledge Workspace", key="btn_chat_with_doc", type="primary"):
                         st.session_state["target_doc_id"] = doc_details["id"]
                         st.session_state["target_doc_title"] = doc_details["title"]
                         st.session_state["current_view"] = "chat"
                         st.rerun()
                 with c_close_btn:
-                    if st.button("❌ Close Inspector", key="btn_close_inspector"):
+                    if st.button("Close Inspector", key="btn_close_inspector"):
                         st.session_state["preview_doc_id"] = None
                         st.rerun()
 
                 # Inspector Tabs: Read Content, Tables, Diagrams, Metadata
                 t_reader, t_tables, t_diagrams, t_meta = st.tabs([
-                    "📖 Document Text & Pages",
-                    "📊 Structured Tables",
-                    "🖼️ Diagrams & Schematics",
-                    "ℹ️ Provenance & Metadata"
+                    "Document Text & Pages",
+                    "Structured Tables",
+                    "Diagrams & Schematics",
+                    "Provenance & Metadata"
                 ])
 
                 with t_reader:
@@ -192,7 +207,8 @@ def render_repository_view() -> None:
                         st.caption("No structured tables extracted for this document.")
                     else:
                         for tab_idx, t in enumerate(table_assets, start=1):
-                            st.markdown(f"#### 📋 {t['caption']}")
+                            tbl_hdr = icon_html("database", t['caption'], size=16, color=ICON_COLOR_GOLD, gap=6)
+                            st.markdown(f"<div style='font-family:var(--font-display); font-weight:700; color:#F4F2E9; margin:8px 0 6px 0;'>{tbl_hdr}</div>", unsafe_allow_html=True)
                             md_tab = t["metadata"].get("markdown", "")
                             if md_tab:
                                 st.markdown(md_tab)
@@ -204,7 +220,8 @@ def render_repository_view() -> None:
                         st.caption("No raster diagrams or visual assets detected.")
                     else:
                         for d in diagrams[:6]:
-                            st.caption(f"📌 {d['caption']} (Dimensions: `{d['dimensions']}`)")
+                            dia_hdr = icon_html("preview", d['caption'], size=15, color=ICON_COLOR_GOLD, gap=6)
+                            st.markdown(f"<div style='font-size:var(--font-size-meta); color:#BAC2B8; margin-bottom:6px;'>{dia_hdr} (Dimensions: <code>{d['dimensions']}</code>)</div>", unsafe_allow_html=True)
                             if d["file_path"] and Path(d["file_path"]).is_file():
                                 st.image(d["file_path"], width=400)
 
@@ -236,6 +253,15 @@ def render_repository_view() -> None:
         except Exception as exc:
             st.error(f"Approval error: {exc}")
 
+    def handle_index(doc_id):
+        try:
+            from backend.storage.vector_store import index_document_in_vector_store
+            res = index_document_in_vector_store(doc_id)
+            st.success(f"Document ID #{doc_id} successfully indexed in ChromaDB ({res.get('indexed_chunks', 0)} chunks).")
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Vector indexing error: {exc}")
+
     def handle_delete(doc_id):
         try:
             delete_document(doc_id, user_id=user_id, username=username)
@@ -248,17 +274,18 @@ def render_repository_view() -> None:
     if not filtered_docs:
         if total_repo_count > 0:
             st.info(
-                f"ℹ️ No documents found matching Category: **{filter_domain.upper()}** and Status: **{filter_status.upper()}**. "
+                f"No documents found matching Category: **{filter_domain.upper()}** and Status: **{filter_status.upper()}**. "
                 f"However, **{total_repo_count} authorized documents** are available across other categories."
             )
-            if st.button("🌐 Show All Categories & Documents", key="btn_show_all_repo"):
+            if st.button("Show All Categories & Documents", key="btn_show_all_repo"):
                 st.session_state["active_domain"] = "all"
                 st.rerun()
         else:
+            empty_vault_ico = get_icon_svg("files", size=44, color=ICON_COLOR_MUTED_GOLD)
             st.markdown(
-                """
+                f"""
                 <div class="nexus-empty-state">
-                    <div style="font-size: 2.2rem;">📁</div>
+                    <div style="margin-bottom: 12px;">{empty_vault_ico}</div>
                     <div class="nexus-empty-title">Document Vault is Currently Empty</div>
                     <div class="nexus-empty-subtitle">
                         No matching authorized technical documents found. Navigate to the Ingestion Engine to upload
@@ -271,7 +298,7 @@ def render_repository_view() -> None:
             if "doc:upload" in user_permissions:
                 col_btn, _ = st.columns([1.5, 4])
                 with col_btn:
-                    if st.button("📥 Go to Document Ingestion", use_container_width=True):
+                    if st.button("Go to Document Ingestion", use_container_width=True):
                         st.session_state["current_view"] = "ingest"
                         st.rerun()
     else:
@@ -283,6 +310,7 @@ def render_repository_view() -> None:
                 doc,
                 on_view=handle_view,
                 on_approve=handle_approve,
+                on_index=handle_index,
                 on_delete=handle_delete,
                 can_manage=can_manage
             )

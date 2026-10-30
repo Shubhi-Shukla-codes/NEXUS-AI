@@ -62,8 +62,11 @@ class HybridRetriever:
                 continue
             rrf_contrib = self.dense_weight / (RRF_K + rank)
             fused_scores[chunk_id] = fused_scores.get(chunk_id, 0.0) + rrf_contrib
+            text_body = item.get("content") or item.get("passage") or ""
             candidate_map[chunk_id] = {
                 **item,
+                "content": text_body,
+                "passage": text_body,
                 "dense_rank": rank,
                 "dense_score": item.get("similarity_score", item.get("relevance_score", 0.0)),
                 "sparse_score": 0.0,
@@ -77,6 +80,7 @@ class HybridRetriever:
                 continue
             rrf_contrib = self.sparse_weight / (RRF_K + rank)
             fused_scores[chunk_id] = fused_scores.get(chunk_id, 0.0) + rrf_contrib
+            text_body = item.get("content") or item.get("passage") or ""
 
             if chunk_id in candidate_map:
                 candidate_map[chunk_id]["sparse_rank"] = rank
@@ -84,6 +88,8 @@ class HybridRetriever:
             else:
                 candidate_map[chunk_id] = {
                     **item,
+                    "content": text_body,
+                    "passage": text_body,
                     "similarity_score": item.get("bm25_score", 0.0),
                     "dense_rank": None,
                     "dense_score": 0.0,
@@ -109,7 +115,9 @@ class HybridRetriever:
             data["rrf_raw_score"] = float(raw_rrf)
             data["combined_score"] = float(norm_combined)
             # Retain similarity_score for backward compatibility with RAG prompt
-            effective_sim = max(data.get("dense_score", 0.0), data.get("sparse_score", 0.0) * 0.8)
+            dense_sc = data.get("dense_score", 0.0)
+            sparse_sc = data.get("sparse_score", 0.0)
+            effective_sim = max(dense_sc, sparse_sc * 0.8)
             data["similarity_score"] = float(effective_sim)
             data["retrieval_mode"] = "hybrid_rrf"
             fused_results.append(data)
@@ -122,6 +130,7 @@ class HybridRetriever:
         user_id: int,
         username: str,
         domain: Optional[str] = None,
+        document_id: Optional[int] = None,
         top_k: Optional[int] = None,
         threshold: Optional[float] = None,
         custom_path: Optional[Path] = None
@@ -152,7 +161,7 @@ class HybridRetriever:
 
         # Step 2: Domain scope checking / auto-hinting
         target_domain = domain if (domain and domain != "all") else None
-        if not target_domain:
+        if not target_domain and not document_id:
             inferred = match_domain_by_query(clean_query)
             if inferred:
                 logger.info("Heuristic domain inference selected: '%s' for query '%s'", inferred, clean_query)
@@ -163,6 +172,7 @@ class HybridRetriever:
             user_id=user_id,
             username=username,
             domain=target_domain,
+            document_id=document_id,
             top_k=k * 2,
             threshold=0.15,  # Broader threshold for candidate pooling
             custom_path=custom_path
@@ -173,6 +183,7 @@ class HybridRetriever:
         bm25_index = BM25Index.build_from_database(
             domain=target_domain,
             approved_only=True,
+            document_id=document_id,
             custom_path=custom_path
         )
         from backend.retrieval.query_expander import expand_query

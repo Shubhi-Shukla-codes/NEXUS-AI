@@ -8,7 +8,24 @@ import streamlit as st
 from datetime import datetime
 from frontend.components.header import render_header
 from frontend.components.citation_card import render_citations_list
+from frontend.components.icons import (
+    get_icon_svg,
+    icon_html,
+    domain_icon,
+    ICON_COLOR_GOLD,
+    ICON_COLOR_MUTED_GOLD,
+    ICON_COLOR_SUCCESS,
+    ICON_COLOR_WARNING,
+    ICON_COLOR_SUBTLE,
+    ICON_COLOR_OFFWHITE
+)
 from backend.generation.rag_engine import get_default_rag_engine, ABSTENTION_MESSAGE
+
+
+@st.cache_resource
+def get_cached_rag_engine():
+    """Cache singleton RAG engine instance to eliminate neural model reload overhead."""
+    return get_default_rag_engine()
 from backend.services.conversation_service import (
     create_conversation,
     list_conversations,
@@ -65,7 +82,7 @@ def render_chat_view() -> None:
             st.rerun()
 
     with col_new:
-        if st.button("➕ New Thread", use_container_width=True):
+        if st.button("New Thread", use_container_width=True):
             created = create_conversation(
                 user_id=user_id,
                 title="New Tactical Briefing",
@@ -75,7 +92,7 @@ def render_chat_view() -> None:
             st.rerun()
 
     with col_del:
-        if st.button("🗑️ Delete", use_container_width=True):
+        if st.button("Delete", use_container_width=True):
             delete_conversation(active_conv_id, user_id=user_id)
             st.session_state["active_conv_id"] = None
             st.rerun()
@@ -88,9 +105,17 @@ def render_chat_view() -> None:
     if target_doc_id:
         c_t_msg, c_t_btn = st.columns([4, 1.2])
         with c_t_msg:
-            st.info(f"🎯 **Targeted Document Focus**: `{target_doc_title}`")
+            tgt_badge = icon_html("target", f"Targeted Document Focus: <code>{target_doc_title}</code>", size=18, color=ICON_COLOR_GOLD)
+            st.markdown(
+                f"""
+                <div class="nexus-alert-info" style="margin: 0; padding: 10px 14px;">
+                    {tgt_badge}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
         with c_t_btn:
-            if st.button("🌐 Clear Focus", use_container_width=True):
+            if st.button("Clear Focus", use_container_width=True):
                 st.session_state["target_doc_id"] = None
                 st.session_state["target_doc_title"] = None
                 st.rerun()
@@ -110,9 +135,21 @@ def render_chat_view() -> None:
         from backend.retrieval.domain_manager import get_domain_profile
         prof = get_domain_profile(domain_filter)
         if prof and not target_doc_id:
-            st.caption(f"🛡️ **{prof.display_name}**: *{prof.description}*")
+            dom_ico = domain_icon(domain_filter, size=16, color=ICON_COLOR_GOLD)
+            st.markdown(
+                f"<div style='font-size:var(--font-size-meta); color:#BAC2B8; display:flex; align-items:center; gap:8px;'>"
+                f"{dom_ico} <span><b>{prof.display_name}</b>: <i>{prof.description}</i></span>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
         else:
-            st.caption(f"🌐 Scope: `ALL REPOSITORY DATA` | Model: `Qwen2.5 1.5B (Ollama Local)` | Engine: `{mode_val.upper()}`")
+            layer_ico = get_icon_svg("layers", size=16, color=ICON_COLOR_GOLD)
+            st.markdown(
+                f"<div style='font-size:var(--font-size-meta); color:#BAC2B8; display:flex; align-items:center; gap:8px;'>"
+                f"{layer_ico} <span>Scope: <code>ALL REPOSITORY DATA</code> | Model: <code>Qwen2.5 1.5B (Local)</code> | Engine: <code>{mode_val.upper()}</code></span>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
 
     st.markdown("<hr style='margin: 4px 0 16px 0; border-color: #3A4A3C;'/>", unsafe_allow_html=True)
 
@@ -120,15 +157,21 @@ def render_chat_view() -> None:
     messages = get_conversation_messages(active_conv_id, user_id=user_id)
 
     if not messages:
-        with st.chat_message("assistant", avatar="🛡️"):
+        with st.chat_message("assistant"):
             st.markdown(
                 "**NEXUS Intelligence Terminal active.** All inquiries are evaluated against "
                 "locally indexed, authorized technical documentation. Answers provide exact source citations "
                 "and page references. If sufficient evidence is absent, the system will explicitly abstain."
             )
-            st.info(
-                "💡 **Operational Tip**: Submit inquiries such as *'What is the standard hydraulic pressure?'* "
-                "or *'What are the emergency exposure protocols?'*. Answers will cite grounded `[REF-X]` sources."
+            tip_ico = get_icon_svg("info", size=18, color=ICON_COLOR_GOLD)
+            st.markdown(
+                f"""
+                <div class="nexus-alert-info" style="display:flex; align-items:flex-start; gap:10px; margin-top:10px;">
+                    {tip_ico}
+                    <span><b>Operational Guidance:</b> Submit technical inquiries such as <i>'What is the standard hydraulic pressure?'</i> or <i>'What are the emergency exposure protocols?'</i>. Synthesized outputs cite verified <code>[REF-X]</code> sources.</span>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
     else:
         for msg in messages:
@@ -138,33 +181,71 @@ def render_chat_view() -> None:
             ts = msg.get("created_at", "")[:19]
 
             if role == "user":
-                with st.chat_message("user", avatar="🧑‍💻"):
-                    st.markdown(f"**Operator Inquiry** <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono);'>[{ts}]</span>", unsafe_allow_html=True)
+                with st.chat_message("user"):
+                    op_hdr = icon_html("user", "Operator Inquiry", size=16, color=ICON_COLOR_SUBTLE, gap=6)
+                    st.markdown(f"{op_hdr} <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); margin-left:8px;'>[{ts}]</span>", unsafe_allow_html=True)
                     st.markdown(content)
             else:
-                with st.chat_message("assistant", avatar="🛡️"):
-                    st.markdown(f"**NEXUS Grounded Synthesis** <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono);'>[{ts}]</span>", unsafe_allow_html=True)
+                with st.chat_message("assistant"):
+                    syn_hdr = icon_html("shield", "NEXUS Grounded Synthesis", size=16, color=ICON_COLOR_GOLD, gap=6)
+                    st.markdown(f"{syn_hdr} <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); margin-left:8px;'>[{ts}]</span>", unsafe_allow_html=True)
                     
                     if ABSTENTION_MESSAGE in content or "insufficient verified information" in content.lower():
                         st.warning(content)
+                        with st.expander("Retrieval Diagnostics (Grounding Inspection)", expanded=False):
+                            st.markdown("<span class='nexus-badge status-pending'>CONTEXT REJECTED — INSUFFICIENT EVIDENCE</span>", unsafe_allow_html=True)
+                            st.caption("No passages in authorized documents met the relevance threshold for this query. System strictly abstained to prevent fabrication.")
                     else:
                         st.markdown(content)
+                        if citations:
+                            render_citations_list(citations)
+                            with st.expander(f"Retrieval Diagnostics ({len(citations)} Chunks Grounded)", expanded=False):
+                                col_d1, col_d2, col_d3 = st.columns(3)
+                                with col_d1:
+                                    st.markdown("<span class='nexus-badge status-active'>PASSED TO LLM</span>", unsafe_allow_html=True)
+                                with col_d2:
+                                    st.markdown(f"**Grounded Chunks:** `{len(citations)}`")
+                                with col_d3:
+                                    top_sc = citations[0].get("similarity_score") or citations[0].get("relevance_score") or 0.0
+                                    st.markdown(f"**Top Relevance:** `{float(top_sc)*100:.1f}%`")
 
-                    if citations:
-                        render_citations_list(citations)
+                                for c_idx, c in enumerate(citations, start=1):
+                                    score_val = float(c.get("similarity_score") or c.get("relevance_score") or 0.0)
+                                    snippet_txt = (c.get("passage") or c.get("content") or "")[:280]
+                                    file_ico = get_icon_svg("file_text", size=14, color=ICON_COLOR_MUTED_GOLD)
+                                    st.markdown(
+                                        f"""
+                                        <div style="background: rgba(20, 28, 22, 0.7); border: 1px solid #303E32; border-radius: 4px; padding: 10px 12px; margin-top: 8px;">
+                                            <div style="display:flex; justify-content:space-between; margin-bottom:4px; align-items:center;">
+                                                <span style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#D6C6A5; display:inline-flex; align-items:center; gap:6px;">
+                                                    {file_ico} <b>[REF-{c_idx}]</b> {c.get('filename')} (Page {c.get('page_number', 1)})
+                                                </span>
+                                                <span style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#76A379;">
+                                                    Score: {score_val*100:.1f}%
+                                                </span>
+                                            </div>
+                                            <div style="font-family:var(--font-body); font-size:14px; color:#BAC2B8; line-height:1.45;">
+                                                {snippet_txt}...
+                                            </div>
+                                        </div>
+                                        """,
+                                        unsafe_allow_html=True
+                                    )
 
     # Chat Input Box
     user_query = st.chat_input("Enter natural language query or technical inquiry...")
     if user_query:
         effective_domain = None if (target_doc_id or domain_filter == "all") else domain_filter
         with st.spinner("Querying vector repository & generating grounded answer..."):
-            rag_engine = get_default_rag_engine()
-            rag_engine.answer_query(
+            rag_engine = get_cached_rag_engine()
+            res = rag_engine.answer_query(
                 query=user_query,
                 user_id=user_id,
                 username=username,
                 domain=effective_domain,
+                target_doc_id=target_doc_id,
                 conversation_id=active_conv_id,
                 search_mode=mode_val
             )
+            st.session_state["last_diagnostics"] = res.get("diagnostics")
         st.rerun()

@@ -67,14 +67,14 @@ class OllamaClient(BaseLLMClient):
         self.base_url = (base_url or settings.models.ollama_base_url).rstrip("/")
         self.model = model or settings.models.llm_model
         self.temperature = temperature if temperature is not None else settings.models.llm_temperature
-        self.max_tokens = max_tokens or settings.models.llm_max_tokens
-        self.timeout = timeout or settings.models.llm_timeout_seconds
+        self.max_tokens = min(max_tokens or settings.models.llm_max_tokens, 384)
+        self.timeout = timeout or min(settings.models.llm_timeout_seconds, 25)
 
     def is_available(self) -> bool:
         """Check whether Ollama daemon is reachable and has the requested model."""
         endpoint = f"{self.base_url}/api/tags"
         try:
-            resp = requests.get(endpoint, timeout=3.0)
+            resp = requests.get(endpoint, timeout=1.5)
             if resp.status_code == 200:
                 data = resp.json()
                 models = [m.get("name") for m in data.get("models", [])]
@@ -101,7 +101,7 @@ class OllamaClient(BaseLLMClient):
             "options": {
                 "temperature": self.temperature,
                 "num_predict": self.max_tokens,
-                "num_ctx": 2048,
+                "num_ctx": 1536,
                 "top_p": 0.9,
                 "repeat_penalty": 1.1
             }

@@ -15,6 +15,21 @@ from backend.storage.db import get_db_connection
 
 logger = logging.getLogger("nexus.bm25")
 
+# Stopwords set to filter non-substantive grammatical tokens from BM25 scoring
+STOPWORDS = {
+    "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", 
+    "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", 
+    "by", "can", "did", "do", "does", "doing", "don", "down", "during", "each", "few", "for", 
+    "from", "further", "had", "has", "have", "having", "he", "her", "here", "hers", "herself", 
+    "him", "himself", "his", "how", "i", "if", "in", "into", "is", "it", "its", "itself", "just", 
+    "me", "more", "most", "my", "myself", "no", "nor", "not", "now", "of", "off", "on", "once", 
+    "only", "or", "other", "our", "ours", "ourselves", "out", "over", "own", "s", "same", "she", 
+    "should", "so", "some", "such", "t", "than", "that", "the", "their", "theirs", "them", 
+    "themselves", "then", "there", "these", "they", "this", "those", "through", "to", "too", 
+    "under", "until", "up", "very", "was", "we", "were", "what", "when", "where", "which", 
+    "while", "who", "whom", "why", "will", "with", "you", "your", "yours", "yourself", "yourselves"
+}
+
 # Tokenizer pattern preserving technical hyphenated codes and alphanumeric tokens
 TOKEN_PATTERN = re.compile(r'\b[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*\b')
 
@@ -102,7 +117,7 @@ class BM25Index:
         if self.corpus_size == 0 or not query.strip():
             return []
 
-        query_tokens = tokenize_technical_text(query)
+        query_tokens = [t for t in tokenize_technical_text(query) if t not in STOPWORDS]
         if not query_tokens:
             return []
 
@@ -147,6 +162,7 @@ class BM25Index:
                 "page_number": meta.get("page_number", 1),
                 "domain": meta.get("domain", "general"),
                 "content": meta.get("content", ""),
+                "passage": meta.get("content", ""),
                 "bm25_raw_score": float(raw_score),
                 "bm25_score": float(norm_score),
                 "retrieval_mode": "bm25_sparse"
@@ -159,6 +175,7 @@ class BM25Index:
         cls,
         domain: Optional[str] = None,
         approved_only: bool = True,
+        document_id: Optional[int] = None,
         custom_path: Optional[Path] = None
     ) -> "BM25Index":
         """
@@ -170,6 +187,9 @@ class BM25Index:
         if domain and domain != "all":
             conditions.append("d.domain = ?")
             params.append(domain)
+        if document_id is not None:
+            conditions.append("c.document_id = ?")
+            params.append(document_id)
         if approved_only:
             conditions.append("d.status IN ('approved', 'indexed')")
 

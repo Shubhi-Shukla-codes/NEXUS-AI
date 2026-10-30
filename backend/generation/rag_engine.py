@@ -68,7 +68,7 @@ class RAGEngine:
             page = c.get("page_number", 1)
             domain = c.get("domain", "General")
             score = c.get("similarity_score", 0.0)
-            text = c.get("content", "").strip()
+            text = (c.get("content") or c.get("passage") or "").strip()
 
             evidence_lines.append(
                 f"[REF-{i}] Document: {doc_name} | Page: {page} | Domain: {domain} | Relevance: {score:.2f}\n"
@@ -130,6 +130,7 @@ class RAGEngine:
         user_id: int,
         username: str,
         domain: Optional[str] = None,
+        target_doc_id: Optional[int] = None,
         conversation_id: Optional[str] = None,
         search_mode: str = "hybrid",
         top_k: Optional[int] = None,
@@ -138,11 +139,12 @@ class RAGEngine:
     ) -> Dict[str, Any]:
         """
         Execute full Grounded RAG flow:
-        1. Query retrieval (Dense Semantic or Hybrid Dense+BM25).
+        1. Query retrieval (Dense Semantic or Hybrid Dense+BM25) with optional target_doc_id filter.
         2. Verify evidence sufficiency / threshold.
         3. If insufficient, abstain immediately without wasting compute.
         4. If sufficient, construct grounded prompt and invoke local LLM.
         5. Map citations and persist message to SQLite conversation history.
+        6. Return full answer and retrieval diagnostics.
         """
         cleaned_query = query.strip()
         if not cleaned_query:
@@ -151,7 +153,14 @@ class RAGEngine:
                 "citations": [],
                 "abstained": True,
                 "confidence_score": 0.0,
-                "evidence_count": 0
+                "evidence_count": 0,
+                "diagnostics": {
+                    "query": "",
+                    "is_sufficient": False,
+                    "context_passed_to_llm": False,
+                    "retrieved_count": 0,
+                    "retrieved_candidates": []
+                }
             }
 
         k = top_k or self.default_top_k
@@ -167,6 +176,7 @@ class RAGEngine:
                     user_id=user_id,
                     username=username,
                     domain=domain,
+                    document_id=target_doc_id,
                     top_k=k,
                     threshold=thresh,
                     custom_path=custom_path
@@ -178,6 +188,7 @@ class RAGEngine:
                     user_id=user_id,
                     username=username,
                     domain=domain,
+                    document_id=target_doc_id,
                     top_k=k,
                     threshold=thresh,
                     custom_path=custom_path
@@ -188,6 +199,7 @@ class RAGEngine:
                 user_id=user_id,
                 username=username,
                 domain=domain,
+                document_id=target_doc_id,
                 top_k=k,
                 threshold=thresh,
                 custom_path=custom_path
@@ -195,6 +207,31 @@ class RAGEngine:
 
         citations = retrieval_res.get("citations", [])
         is_sufficient = retrieval_res.get("is_sufficient", False)
+
+        # Structure diagnostics for transparency
+        diagnostics = {
+            "query": cleaned_query,
+            "search_mode": search_mode,
+            "target_doc_id": target_doc_id,
+            "domain": domain or "ALL",
+            "threshold": thresh,
+            "top_k": k,
+            "is_sufficient": is_sufficient,
+            "context_passed_to_llm": bool(is_sufficient and citations),
+            "retrieved_count": len(citations),
+            "retrieved_candidates": [
+                {
+                    "chunk_id": c.get("chunk_id"),
+                    "document_id": c.get("document_id"),
+                    "filename": c.get("filename"),
+                    "page_number": c.get("page_number", 1),
+                    "similarity_score": round(float(c.get("similarity_score", 0.0)), 4),
+                    "relevance_percent": f"{round(float(c.get('similarity_score', 0.0)) * 100, 1)}%",
+                    "passage_snippet": (c.get("passage") or c.get("content") or "")[:240].strip()
+                }
+                for c in citations
+            ]
+        }
 
         # Step 2: Strict Abstention Check
         if not is_sufficient or not citations:
@@ -229,24 +266,34 @@ class RAGEngine:
                 "abstained": abstained,
                 "confidence_score": 0.0,
                 "evidence_count": 0,
-                "all_retrieved": []
+                "all_retrieved": [],
+                "diagnostics": diagnostics
             }
 
         # Step 3: Build Grounded Prompt
         grounded_prompt = self._build_grounded_prompt(cleaned_query, citations)
 
-        # Step 4: Invoke Local LLM
-        try:
-            raw_answer = self.llm_client.generate(
-                prompt=grounded_prompt,
-                system_prompt=NEXUS_SYSTEM_PROMPT
-            )
-        except LLMError as exc:
-            logger.error("LLM inference error: %s", exc)
+        # Step 4: Invoke Local LLM with pre-flight check to eliminate blocking timeouts
+        if not self.llm_client.is_available():
+            logger.info("Local LLM daemon is offline or busy; returning verified evidence directly.")
+            top_doc = citations[0].get("filename", "Authorized Document")
+            top_page = citations[0].get("page_number", 1)
             raw_answer = (
-                f"LLM INFERENCE NOTICE: The local language model is currently unavailable or busy ({exc}). "
-                "However, verified source evidence was successfully retrieved below."
+                f"LOCAL ENGINE NOTICE: The local language model (qwen2.5:1.5b) is offline or unreachable. "
+                f"Verified intelligence was successfully retrieved from {top_doc} (Page {top_page}) [REF-1]."
             )
+        else:
+            try:
+                raw_answer = self.llm_client.generate(
+                    prompt=grounded_prompt,
+                    system_prompt=NEXUS_SYSTEM_PROMPT
+                )
+            except LLMError as exc:
+                logger.error("LLM inference error: %s", exc)
+                raw_answer = (
+                    f"LLM INFERENCE NOTICE: The local language model is currently busy or unavailable ({exc}). "
+                    "However, verified source evidence was successfully retrieved below."
+                )
 
         # Step 5: Resolve Citations
         active_citations = self._extract_citations(raw_answer, citations)
@@ -279,7 +326,8 @@ class RAGEngine:
             "abstained": False,
             "confidence_score": float(top_score),
             "evidence_count": len(active_citations),
-            "all_retrieved": citations
+            "all_retrieved": citations,
+            "diagnostics": diagnostics
         }
 
 

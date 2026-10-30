@@ -41,11 +41,12 @@ def reindex_all_approved_documents(
     total_docs = len(approved_docs)
     total_chunks_indexed = 0
 
+    # Cleanly reset collection once to eliminate any corrupted segment tombstones
+    store.reset_collection()
+
     for doc in approved_docs:
         doc_id = doc["id"]
-        # Clear existing vectors for document to prevent duplicate accumulation
-        store.delete_document_vectors(doc_id)
-        # Re-index chunks
+        # Re-index chunks directly into fresh collection
         res = index_document_in_vector_store(
             document_id=doc_id,
             embedding_provider=embedder,

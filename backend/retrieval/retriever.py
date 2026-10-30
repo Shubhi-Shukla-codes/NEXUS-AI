@@ -94,6 +94,7 @@ class SemanticRetriever:
         user_id: Optional[int] = None,
         username: str = "OPERATOR",
         domain: Optional[str] = None,
+        document_id: Optional[int] = None,
         top_k: Optional[int] = None,
         threshold: Optional[float] = None,
         approved_only: bool = True,
@@ -103,7 +104,7 @@ class SemanticRetriever:
         Execute semantic retrieval pipeline:
         1. Verify user view permissions
         2. Vectorize query
-        3. Query ChromaDB with domain/status filter
+        3. Query ChromaDB with domain/status/document_id filter
         4. Enforce document-level permission access boundary
         5. Filter candidates by similarity threshold
         6. Deduplicate overlapping passages
@@ -139,7 +140,8 @@ class SemanticRetriever:
             query_embedding=query_vector,
             top_k=k * 2,
             domain=domain,
-            approved_only=approved_only
+            approved_only=approved_only,
+            document_id=document_id
         )
 
         total_candidates_found = len(raw_candidates)
@@ -196,6 +198,7 @@ class SemanticRetriever:
                 "relevance_score": c["similarity_score"],
                 "similarity_score": c["similarity_score"],
                 "passage": chunk_content,
+                "content": chunk_content,
                 "domain": c.get("domain"),
                 "document_id": c.get("document_id"),
                 "chunk_id": c.get("chunk_id"),

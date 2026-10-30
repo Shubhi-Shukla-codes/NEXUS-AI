@@ -6,6 +6,15 @@ bcrypt verification, registration for new operators, and session initialization.
 
 import streamlit as st
 from frontend.components.logo import get_nexus_logo_svg
+from frontend.components.icons import (
+    get_icon_svg,
+    icon_html,
+    ICON_COLOR_GOLD,
+    ICON_COLOR_MUTED_GOLD,
+    ICON_COLOR_SUCCESS,
+    ICON_COLOR_WARNING,
+    ICON_COLOR_SUBTLE
+)
 from backend.storage.db import init_database
 from backend.security.auth import (
     login_user,
@@ -28,11 +37,12 @@ def render_login_view() -> None:
         # Tactical Center Logo
         st.markdown(get_nexus_logo_svg("full"), unsafe_allow_html=True)
         
+        lock_hdr = icon_html("lock", "SECURE AIR-GAPPED GATEWAY // ROLE ENFORCED", size=14, color=ICON_COLOR_GOLD, gap=6)
         st.markdown(
-            """
+            f"""
             <div style="background: rgba(22, 32, 25, 0.82); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid #3A4A3C; border-radius: 8px; padding: 22px 26px; margin-top: 16px; box-shadow: var(--glass-shadow);">
                 <div style="font-family: var(--font-mono); font-size: var(--font-size-label); color: #D6C6A5; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;">
-                    SECURE AIR-GAPPED GATEWAY // ROLE ENFORCED
+                    {lock_hdr}
                 </div>
                 <div style="font-family: var(--font-display); font-size: var(--font-size-card); font-weight: 700; color: #F4F2E9; margin: 6px 0 14px 0;">
                     Authenticate Terminal Session
@@ -41,7 +51,7 @@ def render_login_view() -> None:
             unsafe_allow_html=True
         )
 
-        tab_login, tab_register = st.tabs(["🔐 Sign In", "📝 Register Operator"])
+        tab_login, tab_register = st.tabs(["Sign In", "Register Operator"])
 
         with tab_login:
             with st.form("nexus_login_form"):
@@ -56,7 +66,7 @@ def render_login_view() -> None:
                     placeholder="Enter password..."
                 )
 
-                submit_login = st.form_submit_button("🔓 Authenticate & Enter", use_container_width=True)
+                submit_login = st.form_submit_button("Authenticate & Enter", use_container_width=True)
 
             if submit_login:
                 try:
@@ -72,9 +82,9 @@ def render_login_view() -> None:
                     st.success(f"Access granted. Initialized session as {auth_result['user']['role'].upper()}.")
                     st.rerun()
                 except AuthenticationError as e:
-                    st.error(f"❌ {e}")
+                    st.error(f"{e}")
                 except Exception as e:
-                    st.error(f"⚠️ System Error during authentication: {e}")
+                    st.error(f"System Error during authentication: {e}")
 
             st.markdown(
                 """
@@ -97,7 +107,7 @@ def render_login_view() -> None:
                     format_func=lambda r: r.replace("_", " ").title()
                 )
 
-                submit_reg = st.form_submit_button("🛡️ Create Operator Account", use_container_width=True)
+                submit_reg = st.form_submit_button("Create Operator Account", use_container_width=True)
 
             if submit_reg:
                 try:
@@ -110,9 +120,9 @@ def render_login_view() -> None:
                     )
                     st.success(f"Account for '{new_user['username']}' created successfully! You may now sign in.")
                 except ValueError as e:
-                    st.error(f"❌ {e}")
+                    st.error(f"{e}")
                 except Exception as e:
-                    st.error(f"⚠️ Error creating user: {e}")
+                    st.error(f"Error creating user: {e}")
 
         st.markdown("</div>", unsafe_allow_html=True)
 

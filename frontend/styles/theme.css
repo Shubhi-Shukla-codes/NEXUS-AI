@@ -669,3 +669,29 @@ div[role="dialog"] {
 hr {
   border-color: var(--border-tactical) !important;
 }
+
+/* ==============================================================================
+   NEXUS Professional Vector Lucide Icon Styling
+   ============================================================================== */
+.nexus-lucide-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, stroke 0.15s ease;
+}
+
+.nexus-lucide-icon:hover {
+  stroke: var(--sand-beige);
+}
+
+.nexus-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(38, 56, 43, 0.45);
+  border: 1px solid rgba(58, 74, 60, 0.6);
+  flex-shrink: 0;
+}
