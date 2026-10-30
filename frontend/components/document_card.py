@@ -4,6 +4,7 @@ Renders technical document summary cards with lifecycle badges, permissions,
 domain classification, and action triggers.
 """
 
+import html
 import streamlit as st
 from typing import Dict, Any, Callable, Optional
 from frontend.components.icons import (
@@ -28,10 +29,11 @@ def render_document_card(
     Keys expected: id, filename, title, domain, status, file_size, chunk_count, created_at
     """
     doc_id = doc.get("id", "N/A")
-    filename = doc.get("filename", "Untitled")
-    title = doc.get("title") or filename
-    domain = doc.get("domain", "general").replace("_", " ").upper()
-    status = doc.get("status", "pending").lower()
+    filename = html.escape(str(doc.get("filename", "Untitled")))
+    raw_title = doc.get("title") or filename
+    title = html.escape(str(raw_title))
+    domain = html.escape(str(doc.get("domain", "general").replace("_", " ")).upper())
+    status = html.escape(str(doc.get("status", "pending")).lower())
     size_kb = doc.get("file_size", 0) / 1024
     chunk_count = doc.get("chunk_count", 0)
     created_at = doc.get("created_at", "Unknown")

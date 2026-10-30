@@ -89,6 +89,39 @@ LUCIDE_PATHS = {
 }
 
 
+# Streamlit-Native Material Symbols Mapping (100% Offline & Bundled)
+MATERIAL_ICON_MAP = {
+    "user": ":material/person:",
+    "operator": ":material/person:",
+    "assistant": ":material/shield:",
+    "nexus": ":material/shield:",
+    "dashboard": ":material/dashboard:",
+    "chat": ":material/chat:",
+    "workspace": ":material/chat:",
+    "vault": ":material/folder:",
+    "files": ":material/folder:",
+    "repository": ":material/folder:",
+    "ingest": ":material/cloud_upload:",
+    "upload": ":material/upload:",
+    "analytics": ":material/bar_chart:",
+    "chart": ":material/bar_chart:",
+    "settings": ":material/settings:",
+    "search": ":material/search:",
+    "delete": ":material/delete:",
+    "info": ":material/info:",
+    "warning": ":material/warning:",
+    "success": ":material/check_circle:",
+    "error": ":material/cancel:",
+    "target": ":material/my_location:",
+    "file_text": ":material/description:",
+}
+
+
+def get_material_icon(name: str, fallback: str = ":material/info:") -> str:
+    """Return Streamlit-native Material Symbol string."""
+    return MATERIAL_ICON_MAP.get(name.lower(), fallback)
+
+
 def get_icon_svg(
     name: str,
     size: int = 19,
@@ -100,15 +133,17 @@ def get_icon_svg(
     """
     Generate clean, inline Lucide SVG markup.
     Dimensions, stroke-width, and color conform to the NEXUS design system.
+    Omits external namespace URLs to prevent markdown autolinking.
     """
     icon_key = name.lower().replace("-", "_").replace(" ", "_")
     path_data = LUCIDE_PATHS.get(icon_key, LUCIDE_PATHS.get("info", ""))
 
     aria_attr = f'aria-label="{aria_label}" role="img"' if aria_label else 'aria-hidden="true"'
-    cls_attr = f'class="nexus-lucide-icon {extra_class}".strip()'
+    clean_cls = f"nexus-lucide-icon {extra_class}".strip()
+    cls_attr = f'class="{clean_cls}"'
 
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" '
+        f'<svg width="{size}" height="{size}" '
         f'viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="{stroke_width}" '
         f'stroke-linecap="round" stroke-linejoin="round" {cls_attr} {aria_attr} '
         f'style="display:inline-block; vertical-align:middle; flex-shrink:0;">'

@@ -4,6 +4,7 @@ Renders evidence-grounded source citations, page numbers, similarity metrics,
 and expandable passage content.
 """
 
+import html
 import streamlit as st
 from typing import Dict, Any, List
 from frontend.components.icons import (
@@ -27,12 +28,13 @@ def render_citation_card(citation: Dict[str, Any], index: int = 1) -> None:
       - domain: str
       - approved: bool
     """
-    doc_title = citation.get("doc_title") or citation.get("filename", "Unknown Document")
-    filename = citation.get("filename", "")
-    page = citation.get("page_number", "N/A")
+    raw_title = citation.get("doc_title") or citation.get("filename", "Unknown Document")
+    doc_title = html.escape(str(raw_title))
+    filename = html.escape(str(citation.get("filename", "")))
+    page = html.escape(str(citation.get("page_number", "N/A")))
     score = citation.get("relevance_score", 0.0)
-    passage = citation.get("passage", "").strip()
-    domain = citation.get("domain", "GENERAL").upper()
+    passage = html.escape(str(citation.get("passage", "")).strip())
+    domain = html.escape(str(citation.get("domain", "GENERAL")).upper())
     approved = citation.get("approved", True)
 
     score_pct = f"{score * 100:.1f}%" if isinstance(score, (int, float)) else str(score)

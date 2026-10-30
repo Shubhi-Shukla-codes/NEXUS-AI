@@ -4,6 +4,7 @@ Provides evidence-grounded natural language Q&A, source citation inspection,
 insufficient evidence abstention, and multi-turn SQLite conversation memory.
 """
 
+import html
 import streamlit as st
 from datetime import datetime
 from frontend.components.header import render_header
@@ -157,18 +158,16 @@ def render_chat_view() -> None:
     messages = get_conversation_messages(active_conv_id, user_id=user_id)
 
     if not messages:
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=":material/shield:"):
             st.markdown(
                 "**NEXUS Intelligence Terminal active.** All inquiries are evaluated against "
                 "locally indexed, authorized technical documentation. Answers provide exact source citations "
                 "and page references. If sufficient evidence is absent, the system will explicitly abstain."
             )
-            tip_ico = get_icon_svg("info", size=18, color=ICON_COLOR_GOLD)
             st.markdown(
-                f"""
-                <div class="nexus-alert-info" style="display:flex; align-items:flex-start; gap:10px; margin-top:10px;">
-                    {tip_ico}
-                    <span><b>Operational Guidance:</b> Submit technical inquiries such as <i>'What is the standard hydraulic pressure?'</i> or <i>'What are the emergency exposure protocols?'</i>. Synthesized outputs cite verified <code>[REF-X]</code> sources.</span>
+                """
+                <div class="nexus-alert-info" style="margin-top:10px;">
+                    <b>Operational Guidance:</b> Submit technical inquiries such as <i>'What is the standard hydraulic pressure?'</i> or <i>'What are the emergency exposure protocols?'</i>. Synthesized outputs cite verified <code>[REF-X]</code> sources.
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -181,14 +180,24 @@ def render_chat_view() -> None:
             ts = msg.get("created_at", "")[:19]
 
             if role == "user":
-                with st.chat_message("user"):
-                    op_hdr = icon_html("user", "Operator Inquiry", size=16, color=ICON_COLOR_SUBTLE, gap=6)
-                    st.markdown(f"{op_hdr} <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); margin-left:8px;'>[{ts}]</span>", unsafe_allow_html=True)
+                with st.chat_message("user", avatar=":material/person:"):
+                    st.markdown(
+                        f"<div style='font-family:var(--font-display); font-size:var(--font-size-label); font-weight:700; color:#BAC2B8; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;'>"
+                        f"<span>Operator Inquiry</span>"
+                        f"<span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); font-weight:400;'>[{ts}]</span>"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
                     st.markdown(content)
             else:
-                with st.chat_message("assistant"):
-                    syn_hdr = icon_html("shield", "NEXUS Grounded Synthesis", size=16, color=ICON_COLOR_GOLD, gap=6)
-                    st.markdown(f"{syn_hdr} <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); margin-left:8px;'>[{ts}]</span>", unsafe_allow_html=True)
+                with st.chat_message("assistant", avatar=":material/shield:"):
+                    st.markdown(
+                        f"<div style='font-family:var(--font-display); font-size:var(--font-size-label); font-weight:700; color:#D6C6A5; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;'>"
+                        f"<span>NEXUS Grounded Synthesis</span>"
+                        f"<span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono); font-weight:400;'>[{ts}]</span>"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
                     
                     if ABSTENTION_MESSAGE in content or "insufficient verified information" in content.lower():
                         st.warning(content)
@@ -211,14 +220,15 @@ def render_chat_view() -> None:
 
                                 for c_idx, c in enumerate(citations, start=1):
                                     score_val = float(c.get("similarity_score") or c.get("relevance_score") or 0.0)
-                                    snippet_txt = (c.get("passage") or c.get("content") or "")[:280]
+                                    snippet_txt = html.escape((c.get("passage") or c.get("content") or "")[:280])
+                                    esc_fname = html.escape(str(c.get("filename") or "Document"))
                                     file_ico = get_icon_svg("file_text", size=14, color=ICON_COLOR_MUTED_GOLD)
                                     st.markdown(
                                         f"""
                                         <div style="background: rgba(20, 28, 22, 0.7); border: 1px solid #303E32; border-radius: 4px; padding: 10px 12px; margin-top: 8px;">
                                             <div style="display:flex; justify-content:space-between; margin-bottom:4px; align-items:center;">
                                                 <span style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#D6C6A5; display:inline-flex; align-items:center; gap:6px;">
-                                                    {file_ico} <b>[REF-{c_idx}]</b> {c.get('filename')} (Page {c.get('page_number', 1)})
+                                                    {file_ico} <b>[REF-{c_idx}]</b> {esc_fname} (Page {c.get('page_number', 1)})
                                                 </span>
                                                 <span style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#76A379;">
                                                     Score: {score_val*100:.1f}%
