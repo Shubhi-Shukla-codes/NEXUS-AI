@@ -109,9 +109,9 @@ def render_sidebar() -> str:
             role = user.get("role", "USER")
             st.markdown(
                 f"""
-                <div style="background: rgba(22, 32, 24, 0.82); border: 1px solid #303E32; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; backdrop-filter: var(--glass-blur);">
-                    <div style="font-family: var(--font-display); font-size: 14px; color: #A4B0A3;">OPERATOR: <b style="color:#F4F2E9;">{username.upper()}</b></div>
-                    <div style="font-size: var(--font-size-meta); color: #D6C6A5; font-family: var(--font-mono); margin-top: 2px;">CLEARANCE: {role.upper()}</div>
+                <div style="background: rgba(22, 32, 24, 0.82); border: 1px solid #303E32; padding: 12px 14px; border-radius: 6px; margin-bottom: 12px; backdrop-filter: var(--glass-blur);">
+                    <div style="font-family: var(--font-display); font-size: var(--font-size-label); color: #A4B0A3;">OPERATOR: <b style="color:#F4F2E9;">{username.upper()}</b></div>
+                    <div style="font-size: var(--font-size-meta); color: #D6C6A5; font-family: var(--font-mono); margin-top: 4px;">CLEARANCE: {role.upper()}</div>
                 </div>
                 """,
                 unsafe_allow_html=True

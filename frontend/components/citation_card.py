@@ -41,7 +41,7 @@ def render_citation_card(citation: Dict[str, Any], index: int = 1) -> None:
             <div class="nexus-citation-title">
                 <span style="color:#B49A5A; font-family:var(--font-mono); font-weight:700;">[{index}]</span>
                 <span style="color:#F4F2E9; font-weight:700; font-family:var(--font-display);">{doc_title}</span>
-                <span style="color:#C3B091; font-size:14px; font-family:var(--font-body);">(Page {page})</span>
+                <span style="color:#C3B091; font-size:var(--font-size-meta); font-family:var(--font-body);">(Page {page})</span>
                 {approval_badge}
                 <span style="margin-left:auto; font-family:var(--font-mono); font-size:var(--font-size-meta); color:#A5D6A7;">
                     RELEVANCE: {score_pct}

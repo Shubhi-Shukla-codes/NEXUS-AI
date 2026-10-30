@@ -27,11 +27,11 @@ def render_ingest_view() -> None:
 
     st.markdown(
         """
-        <div style="background-color: #19231B; border: 1px solid #303E32; border-radius: 6px; padding: 14px 18px; margin-bottom: 18px;">
-            <div style="font-size: 0.95rem; font-weight: 700; color: #F4F2E9; margin-bottom: 4px;">
+        <div style="background-color: rgba(25, 35, 27, 0.82); border: 1px solid #303E32; border-radius: 6px; padding: 16px 20px; margin-bottom: 20px; backdrop-filter: var(--glass-blur);">
+            <div style="font-family: var(--font-display); font-size: var(--font-size-card); font-weight: 700; color: #F4F2E9; margin-bottom: 6px;">
                 Authorized Document Intake Pipeline
             </div>
-            <div style="font-size: 0.83rem; color: #BAC2B8; line-height: 1.45;">
+            <div style="font-family: var(--font-body); font-size: var(--font-size-body); color: #BAC2B8; line-height: var(--line-height-body);">
                 Ingest technical manuals, emergency guides, or cybersecurity documentation into the local vault. 
                 All files undergo SHA-256 fingerprinting, layout-aware validation, and permission verification before storage.
             </div>
@@ -133,14 +133,14 @@ def render_ingest_view() -> None:
 
     # Format Specification Card
     st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
-    st.markdown("<b>Supported File Formats & Parser Specifications:</b>", unsafe_allow_html=True)
+    st.markdown("<b style='font-family:var(--font-display); font-size:var(--font-size-label); color:var(--sand-beige); text-transform:uppercase; letter-spacing:0.04em;'>Supported File Formats & Parser Specifications:</b>", unsafe_allow_html=True)
     f1, f2, f3, f4 = st.columns(4)
     with f1:
         st.markdown(
             """
-            <div class="nexus-stat-card" style="padding:10px 12px;">
-                <div style="font-weight:700; color:#F4F2E9;">PDF Documents</div>
-                <div style="font-size:0.75rem; color:#BAC2B8;">Magic signature: %PDF<br/>Engine: PyMuPDF</div>
+            <div class="nexus-stat-card" style="padding:14px 16px;">
+                <div style="font-family:var(--font-display); font-weight:700; font-size:var(--font-size-nav); color:#F4F2E9; margin-bottom:4px;">PDF Documents</div>
+                <div style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#BAC2B8; line-height:1.5;">Magic signature: %PDF<br/>Engine: PyMuPDF</div>
             </div>
             """,
             unsafe_allow_html=True
@@ -148,9 +148,9 @@ def render_ingest_view() -> None:
     with f2:
         st.markdown(
             """
-            <div class="nexus-stat-card" style="padding:10px 12px;">
-                <div style="font-weight:700; color:#F4F2E9;">Office DOCX</div>
-                <div style="font-size:0.75rem; color:#BAC2B8;">Magic signature: PK ZIP<br/>Engine: python-docx</div>
+            <div class="nexus-stat-card" style="padding:14px 16px;">
+                <div style="font-family:var(--font-display); font-weight:700; font-size:var(--font-size-nav); color:#F4F2E9; margin-bottom:4px;">Office DOCX</div>
+                <div style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#BAC2B8; line-height:1.5;">Magic signature: PK ZIP<br/>Engine: python-docx</div>
             </div>
             """,
             unsafe_allow_html=True
@@ -158,9 +158,9 @@ def render_ingest_view() -> None:
     with f3:
         st.markdown(
             """
-            <div class="nexus-stat-card" style="padding:10px 12px;">
-                <div style="font-weight:700; color:#F4F2E9;">Tabular / Excel</div>
-                <div style="font-size:0.75rem; color:#BAC2B8;">Formats: .xlsx, .csv<br/>Engine: openpyxl</div>
+            <div class="nexus-stat-card" style="padding:14px 16px;">
+                <div style="font-family:var(--font-display); font-weight:700; font-size:var(--font-size-nav); color:#F4F2E9; margin-bottom:4px;">Tabular / Excel</div>
+                <div style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#BAC2B8; line-height:1.5;">Formats: .xlsx, .csv<br/>Engine: openpyxl</div>
             </div>
             """,
             unsafe_allow_html=True
@@ -168,9 +168,9 @@ def render_ingest_view() -> None:
     with f4:
         st.markdown(
             """
-            <div class="nexus-stat-card" style="padding:10px 12px;">
-                <div style="font-weight:700; color:#F4F2E9;">Plaintext & MD</div>
-                <div style="font-size:0.75rem; color:#BAC2B8;">Formats: .txt, .md, .json<br/>UTF-8 validated</div>
+            <div class="nexus-stat-card" style="padding:14px 16px;">
+                <div style="font-family:var(--font-display); font-weight:700; font-size:var(--font-size-nav); color:#F4F2E9; margin-bottom:4px;">Plaintext & MD</div>
+                <div style="font-family:var(--font-mono); font-size:var(--font-size-meta); color:#BAC2B8; line-height:1.5;">Formats: .txt, .md, .json<br/>UTF-8 validated</div>
             </div>
             """,
             unsafe_allow_html=True

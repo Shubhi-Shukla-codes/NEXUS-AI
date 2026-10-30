@@ -2,6 +2,7 @@
    NEXUS TACTICAL DESIGN SYSTEM — TYPOGRAPHY & THEME SPECIFICATION
    Visual Identity: Disciplined, Modern, Technical, Military Intelligence Dashboard
    Offline-Ready Fonts: Google Sans Flex, Google Sans Text, IBM Plex Mono
+   Global Typography Enhancement: ~20-30% Size Increase & Enhanced Readability
    ============================================================================== */
 
 /* Local Offline Font Registrations */
@@ -85,20 +86,20 @@
   --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
   --font-sans: var(--font-body);
 
-  /* Typography Hierarchy Scale */
-  --font-size-hero: 34px;
-  --font-size-section: 24px;
-  --font-size-card: 19px;
-  --font-size-body: 16px;
-  --font-size-nav: 15px;
-  --font-size-button: 15px;
-  --font-size-input: 16px;
-  --font-size-label: 13px;
-  --font-size-meta: 12.5px;
-  --font-size-badge: 12px;
+  /* Enhanced Global Typography Scale (~20-30% Size Increase) */
+  --font-size-hero: 36px;       /* Main page headings (Suggested: 28-32px min) */
+  --font-size-section: 26px;    /* Section headings (Suggested: 22-26px) */
+  --font-size-card: 21px;       /* Card headings (Suggested: 18-20px min) */
+  --font-size-body: 18px;       /* Body text, paragraphs & long-form chat (Suggested: 16-18px) */
+  --font-size-nav: 17.5px;      /* Sidebar navigation links (Suggested: 16-18px) */
+  --font-size-button: 17px;     /* Buttons (Suggested: 16-18px) */
+  --font-size-input: 17.5px;    /* Input fields and select options (16-18px) */
+  --font-size-label: 15.5px;    /* Labels & subsection titles (Suggested: 14-16px) */
+  --font-size-meta: 15px;       /* Telemetry, metadata, table data, captions (Suggested: 14-16px) */
+  --font-size-badge: 14px;      /* Small status indicators & pills (Suggested: 14px min) */
 
-  --line-height-body: 1.6;
-  --line-height-heading: 1.25;
+  --line-height-body: 1.65;
+  --line-height-heading: 1.3;
 
   /* Surface & Glassmorphism Tokens */
   --bg-base: #121814;
@@ -154,9 +155,9 @@ section[data-testid="stSidebar"],
 
 /* Main Container Spacing */
 .block-container {
-  padding-top: 1.5rem !important;
-  padding-bottom: 3rem !important;
-  max-width: 1380px !important;
+  padding-top: 1.75rem !important;
+  padding-bottom: 3.5rem !important;
+  max-width: 1420px !important;
 }
 
 /* Typography Hierarchy for Headings */
@@ -167,7 +168,7 @@ h1, .stHeadingContainer h1, [data-testid="stHeadingWithActionElements"] h1 {
   letter-spacing: 0.02em !important;
   color: var(--off-white) !important;
   line-height: var(--line-height-heading) !important;
-  margin-bottom: 0.75rem !important;
+  margin-bottom: 0.85rem !important;
 }
 
 h2, .stHeadingContainer h2, [data-testid="stHeadingWithActionElements"] h2 {
@@ -176,9 +177,9 @@ h2, .stHeadingContainer h2, [data-testid="stHeadingWithActionElements"] h2 {
   font-weight: 600 !important;
   letter-spacing: 0.015em !important;
   color: var(--sand-beige) !important;
-  line-height: 1.3 !important;
-  margin-top: 1rem !important;
-  margin-bottom: 0.5rem !important;
+  line-height: 1.35 !important;
+  margin-top: 1.15rem !important;
+  margin-bottom: 0.65rem !important;
 }
 
 h3, .stHeadingContainer h3, [data-testid="stHeadingWithActionElements"] h3 {
@@ -187,13 +188,13 @@ h3, .stHeadingContainer h3, [data-testid="stHeadingWithActionElements"] h3 {
   font-weight: 600 !important;
   letter-spacing: 0.01em !important;
   color: var(--off-white) !important;
-  margin-top: 0.75rem !important;
-  margin-bottom: 0.5rem !important;
+  margin-top: 0.85rem !important;
+  margin-bottom: 0.55rem !important;
 }
 
 h4, h5, h6 {
   font-family: var(--font-display) !important;
-  font-size: var(--font-size-body) !important;
+  font-size: calc(var(--font-size-card) * 0.95) !important;
   font-weight: 600 !important;
   color: var(--sand-beige) !important;
 }
@@ -217,11 +218,13 @@ section[data-testid="stSidebar"] hr {
 section[data-testid="stSidebar"] div.stButton > button {
   font-family: var(--font-display) !important;
   font-size: var(--font-size-nav) !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   letter-spacing: 0.02em !important;
   text-align: left !important;
   justify-content: flex-start !important;
-  padding: 10px 14px !important;
+  padding: 12px 16px !important;
+  min-height: 46px !important;
+  line-height: 1.4 !important;
 }
 
 /* Tactical Topbar Header */
@@ -229,19 +232,19 @@ section[data-testid="stSidebar"] div.stButton > button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: 14px 22px;
   background: var(--glass-panel-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 2px solid var(--olive-drab);
   border-radius: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   box-shadow: var(--glass-shadow);
 }
 
 .nexus-topbar-title {
   font-family: var(--font-display);
-  font-size: var(--font-size-card);
+  font-size: var(--font-size-section);
   font-weight: 700;
   color: var(--off-white);
   letter-spacing: 0.05em;
@@ -250,13 +253,14 @@ section[data-testid="stSidebar"] div.stButton > button {
 /* Badges & Status Indicators */
 .nexus-badge {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 12px;
   font-size: var(--font-size-badge);
   font-family: var(--font-mono);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border-radius: 3px;
+  border-radius: 4px;
+  line-height: 1.3;
   background-color: var(--army-green);
   color: var(--sand-beige);
   border: 1px solid var(--muted-gold);
@@ -288,8 +292,8 @@ section[data-testid="stSidebar"] div.stButton > button {
   border: var(--card-border);
   border-left: 4px solid var(--olive-drab);
   border-radius: 6px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
   box-shadow: var(--glass-shadow);
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
@@ -305,23 +309,24 @@ section[data-testid="stSidebar"] div.stButton > button {
   color: var(--sand-beige);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
 .nexus-stat-val {
-  font-size: 1.85rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--off-white);
   font-family: var(--font-display);
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 .nexus-stat-sub {
   font-size: var(--font-size-meta);
   font-family: var(--font-mono);
   color: var(--khaki);
-  margin-top: 5px;
+  margin-top: 6px;
+  line-height: 1.4;
 }
 
 /* Tactical Camouflage Banner Pattern */
@@ -331,8 +336,8 @@ section[data-testid="stSidebar"] div.stButton > button {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--card-border);
   border-radius: 8px;
-  padding: 22px 24px;
-  margin-bottom: 20px;
+  padding: 24px 28px;
+  margin-bottom: 22px;
   box-shadow: var(--glass-shadow);
 }
 
@@ -344,8 +349,8 @@ section[data-testid="stSidebar"] div.stButton > button {
   border: var(--glass-panel-border);
   border-left: 3px solid var(--muted-gold);
   border-radius: 6px;
-  padding: 14px 16px;
-  margin-top: 10px;
+  padding: 16px 18px;
+  margin-top: 12px;
   font-size: var(--font-size-body);
   box-shadow: var(--glass-shadow);
 }
@@ -354,21 +359,21 @@ section[data-testid="stSidebar"] div.stButton > button {
   color: var(--sand-beige);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--font-size-nav);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .nexus-citation-passage {
   color: #DCD9CE;
   font-family: var(--font-body);
-  font-size: 14.5px;
+  font-size: var(--font-size-body);
   background-color: rgba(0, 0, 0, 0.35);
-  padding: 10px 12px;
-  border-radius: 4px;
-  margin-top: 8px;
-  line-height: 1.55;
+  padding: 12px 14px;
+  border-radius: 5px;
+  margin-top: 10px;
+  line-height: var(--line-height-body);
   border-left: 2px solid var(--olive-drab);
 }
 
@@ -379,8 +384,8 @@ section[data-testid="stSidebar"] div.stButton > button {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--card-border);
   border-radius: 6px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
   box-shadow: var(--glass-shadow);
   transition: border-color 0.15s ease;
 }
@@ -398,8 +403,8 @@ section[data-testid="stSidebar"] div.stButton > button {
   border: var(--glass-panel-border) !important;
   border-radius: 8px !important;
   box-shadow: var(--glass-shadow) !important;
-  padding: 16px 20px !important;
-  margin-bottom: 14px !important;
+  padding: 18px 22px !important;
+  margin-bottom: 16px !important;
 }
 
 [data-testid="stChatMessage"] p,
@@ -418,7 +423,7 @@ code {
   background-color: rgba(0, 0, 0, 0.45) !important;
   border: 1px solid rgba(85, 107, 47, 0.3) !important;
   border-radius: 4px !important;
-  padding: 2px 6px !important;
+  padding: 3px 7px !important;
 }
 
 pre {
@@ -427,7 +432,7 @@ pre {
   background-color: rgba(12, 18, 14, 0.9) !important;
   border: 1px solid var(--border-tactical) !important;
   border-radius: 6px !important;
-  padding: 12px !important;
+  padding: 14px !important;
 }
 
 /* Streamlit Button Styling */
@@ -440,8 +445,10 @@ div.stButton > button {
   font-family: var(--font-display) !important;
   font-size: var(--font-size-button) !important;
   font-weight: 600 !important;
-  border-radius: 5px !important;
-  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  padding: 10px 18px !important;
+  min-height: 44px !important;
+  line-height: 1.4 !important;
   transition: all 0.2s ease !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
@@ -478,14 +485,16 @@ div[data-baseweb="select"] {
   backdrop-filter: var(--glass-blur) !important;
   -webkit-backdrop-filter: var(--glass-blur) !important;
   border: 1px solid var(--border-tactical) !important;
-  border-radius: 5px !important;
+  border-radius: 6px !important;
   color: var(--off-white) !important;
+  min-height: 44px !important;
 }
 
 div[data-baseweb="input"] input,
 div[data-baseweb="textarea"] textarea {
   font-family: var(--font-body) !important;
   font-size: var(--font-size-input) !important;
+  line-height: 1.5 !important;
   color: var(--off-white) !important;
 }
 
@@ -493,6 +502,19 @@ div[data-baseweb="input"] input::placeholder,
 div[data-baseweb="textarea"] textarea::placeholder {
   color: #8C9B8E !important;
   font-family: var(--font-body) !important;
+}
+
+div[data-baseweb="select"] * {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-input) !important;
+}
+
+/* Popover & Selectbox Dropdown Menus */
+div[data-baseweb="popover"] li,
+div[data-baseweb="menu"] li {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-body) !important;
+  padding: 10px 14px !important;
 }
 
 /* Labels and Helper Text */
@@ -504,6 +526,7 @@ label,
   font-weight: 600 !important;
   color: var(--sand-beige) !important;
   letter-spacing: 0.02em !important;
+  margin-bottom: 6px !important;
 }
 
 /* Captions and Telemetry Metadata */
@@ -512,7 +535,8 @@ label,
 small {
   font-family: var(--font-mono) !important;
   font-size: var(--font-size-meta) !important;
-  color: #A4B2A5 !important;
+  color: #BAC5B9 !important;
+  line-height: 1.55 !important;
 }
 
 /* Tabs Navigation */
@@ -521,6 +545,7 @@ button[data-baseweb="tab"] {
   font-size: var(--font-size-button) !important;
   font-weight: 600 !important;
   color: var(--khaki) !important;
+  padding: 10px 20px !important;
 }
 
 button[data-baseweb="tab"][aria-selected="true"] {
@@ -531,13 +556,13 @@ button[data-baseweb="tab"][aria-selected="true"] {
 /* Empty State Containers */
 .nexus-empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 44px 24px;
   border: 2px dashed rgba(58, 74, 60, 0.7);
   border-radius: 8px;
   background-color: rgba(18, 27, 21, 0.65);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  margin: 20px 0;
+  margin: 22px 0;
 }
 
 .nexus-empty-title {
@@ -545,16 +570,16 @@ button[data-baseweb="tab"][aria-selected="true"] {
   font-size: var(--font-size-card);
   font-weight: 600;
   color: var(--sand-beige);
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .nexus-empty-subtitle {
   font-family: var(--font-body);
-  font-size: 14.5px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   color: #BAC5B9;
-  margin-top: 6px;
-  max-width: 500px;
+  margin-top: 8px;
+  max-width: 540px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -563,46 +588,81 @@ button[data-baseweb="tab"][aria-selected="true"] {
 .nexus-alert-info {
   background-color: rgba(30, 45, 36, 0.85);
   border-left: 4px solid var(--olive-drab);
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin: 10px 0;
+  padding: 14px 18px;
+  border-radius: 5px;
+  margin: 12px 0;
   color: #D6DEC8;
   font-family: var(--font-body);
   font-size: var(--font-size-body);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .nexus-alert-warning {
   background-color: rgba(51, 43, 28, 0.85);
   border-left: 4px solid var(--warning-tactical);
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin: 10px 0;
+  padding: 14px 18px;
+  border-radius: 5px;
+  margin: 12px 0;
   color: #EBD9B5;
   font-family: var(--font-body);
   font-size: var(--font-size-body);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .nexus-alert-danger {
   background-color: rgba(51, 30, 30, 0.85);
   border-left: 4px solid var(--danger-tactical);
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin: 10px 0;
+  padding: 14px 18px;
+  border-radius: 5px;
+  margin: 12px 0;
   color: #E6BDBD;
   font-family: var(--font-body);
   font-size: var(--font-size-body);
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+[data-testid="stAlert"] {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-body) !important;
+  line-height: 1.55 !important;
 }
 
 /* Tables and DataFrames */
 [data-testid="stDataFrame"],
-table {
+table,
+.stTable {
   font-family: var(--font-mono) !important;
   font-size: var(--font-size-meta) !important;
   border-radius: 6px !important;
   overflow: hidden !important;
+}
+
+table th {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-label) !important;
+  font-weight: 700 !important;
+  padding: 10px 14px !important;
+  color: var(--sand-beige) !important;
+}
+
+table td {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-meta) !important;
+  padding: 10px 14px !important;
+  line-height: 1.55 !important;
+}
+
+/* Expanders & Dialogs */
+[data-testid="stExpander"] details summary p {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-size-nav) !important;
+  font-weight: 600 !important;
+}
+
+[data-testid="stDialog"],
+div[role="dialog"] {
+  font-family: var(--font-body) !important;
+  font-size: var(--font-size-body) !important;
 }
 
 /* Divider lines */

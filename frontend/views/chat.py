@@ -139,11 +139,11 @@ def render_chat_view() -> None:
 
             if role == "user":
                 with st.chat_message("user", avatar="🧑‍💻"):
-                    st.markdown(f"**Operator Inquiry** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
+                    st.markdown(f"**Operator Inquiry** <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono);'>[{ts}]</span>", unsafe_allow_html=True)
                     st.markdown(content)
             else:
                 with st.chat_message("assistant", avatar="🛡️"):
-                    st.markdown(f"**NEXUS Grounded Synthesis** <span style='font-size:0.75rem; color:#8C9B8E;'>[{ts}]</span>", unsafe_allow_html=True)
+                    st.markdown(f"**NEXUS Grounded Synthesis** <span style='font-size:var(--font-size-meta); color:#8C9B8E; font-family:var(--font-mono);'>[{ts}]</span>", unsafe_allow_html=True)
                     
                     if ABSTENTION_MESSAGE in content or "insufficient verified information" in content.lower():
                         st.warning(content)

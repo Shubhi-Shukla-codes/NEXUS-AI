@@ -126,10 +126,10 @@ def render_repository_view() -> None:
             with st.container():
                 st.markdown(
                     f"""
-                    <div style="background:#18221A; border:1px solid #4B644D; border-radius:6px; padding:16px; margin-bottom:20px;">
+                    <div style="background:#18221A; border:1px solid #4B644D; border-radius:6px; padding:18px 20px; margin-bottom:20px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <span style="font-size:1.2rem; font-weight:700; color:#F4F2E9;">📄 {doc_details['title']}</span>
+                                <span style="font-family:var(--font-display); font-size:var(--font-size-card); font-weight:700; color:#F4F2E9;">📄 {doc_details['title']}</span>
                                 <span class="nexus-badge status-active" style="margin-left:10px;">{doc_details['status'].upper()}</span>
                                 <span class="nexus-badge" style="margin-left:6px; background:#2A382C;">{doc_details['domain'].upper()}</span>
                             </div>
@@ -177,7 +177,7 @@ def render_repository_view() -> None:
                         page_text = page_dict.get(selected_page, "")
                         st.markdown(
                             f"""
-                            <div style="background:#111713; border:1px solid #2D3D30; border-radius:4px; padding:16px; font-family:var(--font-sans); line-height:1.6; color:#E0E6DF; max-height:480px; overflow-y:auto; white-space:pre-wrap;">
+                            <div style="background:#111713; border:1px solid #2D3D30; border-radius:6px; padding:18px 20px; font-family:var(--font-body); font-size:var(--font-size-body); line-height:var(--line-height-body); color:#E0E6DF; max-height:500px; overflow-y:auto; white-space:pre-wrap;">
 {page_text}
                             </div>
                             """,

@@ -78,7 +78,7 @@ def render_login_view() -> None:
 
             st.markdown(
                 """
-                <div style="background:#131B15; border-left:3px solid #B49A5A; padding:8px 10px; border-radius:3px; margin-top:10px; font-size:0.75rem; color:#C3B091;">
+                <div style="background:#131B15; border-left:3px solid #B49A5A; padding:10px 14px; border-radius:4px; margin-top:12px; font-family:var(--font-body); font-size:var(--font-size-meta); color:#C3B091; line-height:1.55;">
                     <b>Default Setup Credentials:</b><br/>
                     Username: <code>admin</code> &nbsp;|&nbsp; Password: <code>Admin@Nexus2026!</code>
                 </div>

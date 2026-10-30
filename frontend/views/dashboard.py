@@ -20,10 +20,10 @@ def render_dashboard_view() -> None:
     st.markdown(
         """
         <div class="nexus-camo-hero">
-            <div style="font-size: 1.6rem; font-weight: 800; color: #F4F2E9; margin: 4px 0 8px 0;">
+            <div style="font-family: var(--font-display); font-size: var(--font-size-section); font-weight: 700; color: #F4F2E9; margin: 4px 0 8px 0; letter-spacing: 0.02em;">
                 NEXUS Tactical Knowledge Intelligence Engine
             </div>
-            <div style="font-size: 0.9rem; color: #C5CEC3; max-width: 720px; line-height: 1.5;">
+            <div style="font-family: var(--font-body); font-size: var(--font-size-body); color: #C5CEC3; max-width: 820px; line-height: var(--line-height-body);">
                 Local-first semantic intelligence system operational. Ground truth indexing, vector retrieval, 
                 and evidence-backed reasoning enabled within air-gapped domain boundaries.
             </div>

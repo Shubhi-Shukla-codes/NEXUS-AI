@@ -28,7 +28,7 @@ def render_analytics_view() -> None:
             <span style="font-family: var(--font-mono); font-size: var(--font-size-label); color: #D6C6A5; text-transform: uppercase; font-weight: 600; letter-spacing: 0.06em;">
                 EMPIRICAL TELEMETRY MONITOR // ZERO FABRICATION POLICY
             </span>
-            <div style="font-family: var(--font-body); font-size: 14.5px; color: #BAC2B8; margin-top: 5px; line-height: 1.5;">
+            <div style="font-family: var(--font-body); font-size: var(--font-size-body); color: #BAC2B8; margin-top: 6px; line-height: var(--line-height-body);">
                 All metrics reflect actual database transactions, measured hardware latencies, and real evaluation runs.
             </div>
         </div>
